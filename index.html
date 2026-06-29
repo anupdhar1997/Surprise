@@ -25,8 +25,7 @@
             background-color: var(--primary-bg);
             color: var(--text-light);
             font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-            height: 100vh; width: 100vw;
+            overflow: hidden; height: 100vh; width: 100vw;
         }
 
         /* --- Screens --- */
@@ -36,48 +35,30 @@
             opacity: 0; z-index: 10;
         }
 
-        #intro-screen {
-            display: flex; opacity: 1;
-            background: linear-gradient(135deg, #2b0814 0%, #1a050a 100%); z-index: 30;
-        }
-
+        #intro-screen { display: flex; opacity: 1; background: linear-gradient(135deg, #2b0814 0%, #1a050a 100%); z-index: 30; }
         #anticipation-screen { background: #0a0104; z-index: 20; }
-        
         #surprise-screen {
             background: linear-gradient(135deg, #350117 0%, #140005 100%);
             padding: 50px 20px; text-align: center; z-index: 10;
             justify-content: flex-start; overflow-y: auto; overflow-x: hidden;
         }
-
         #surprise-screen::-webkit-scrollbar { display: none; }
 
-        /* --- Elements --- */
+        /* --- Typography --- */
         .heart-button {
             font-size: 5rem; cursor: pointer; animation: heartbeat 1.5s infinite;
-            filter: drop-shadow(0 0 20px rgba(255, 77, 109, 0.6));
-            -webkit-tap-highlight-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(255, 77, 109, 0.6)); -webkit-tap-highlight-color: transparent;
         }
-
         .instruction {
             margin-top: 20px; font-size: 1.2rem; letter-spacing: 2px; color: var(--accent-pink);
             text-transform: uppercase; animation: fadeInOut 2s infinite;
         }
-
         .anticipation-text {
-            position: absolute; font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem; color: var(--accent-pink); opacity: 0; text-align: center; width: 90%;
-            text-shadow: 0 0 15px rgba(255, 77, 109, 0.5);
+            position: absolute; font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--accent-pink); 
+            opacity: 0; text-align: center; width: 90%; text-shadow: 0 0 15px rgba(255, 77, 109, 0.5);
         }
-
-        h1 {
-            font-family: 'Dancing Script', cursive; font-size: 3.5rem; color: var(--accent-pink);
-            margin-bottom: 5px; text-shadow: 2px 2px 10px rgba(255, 77, 109, 0.4);
-        }
-
-        .ldr-subtitle {
-            font-size: 0.9rem; color: var(--text-light); opacity: 0.8;
-            margin-bottom: 25px; font-style: italic;
-        }
+        h1 { font-family: 'Dancing Script', cursive; font-size: 3.5rem; color: var(--accent-pink); margin-bottom: 5px; text-shadow: 2px 2px 10px rgba(255, 77, 109, 0.4); }
+        .ldr-subtitle { font-size: 0.9rem; color: var(--text-light); opacity: 0.8; margin-bottom: 25px; font-style: italic; }
 
         .message-box {
             background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
@@ -86,132 +67,96 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); margin-bottom: 30px;
         }
 
-        /* --- NEW: The Journey Track (Timeline) --- */
+        /* --- NEW: Interactive Virtual Cake --- */
+        .interactive-cake-section {
+            background: rgba(0,0,0,0.3); border-radius: 20px; padding: 30px 20px;
+            width: 100%; max-width: 350px; margin-bottom: 40px; border: 1px solid rgba(255, 77, 109, 0.15);
+            text-align: center;
+        }
+        
+        .interactive-cake-section h2 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--text-light); margin-bottom: 5px; }
+        
+        .cake-instruction-text { font-size: 0.95rem; color: var(--accent-pink); margin-bottom: 40px; font-style: italic; height: 40px; }
+
+        .cake-stage { position: relative; display: flex; justify-content: center; align-items: flex-end; height: 120px; margin-bottom: 20px;}
+
+        /* CSS Cake */
+        .cake {
+            width: 160px; height: 80px; background: #ffb3c1; border-radius: 10px; position: relative;
+            box-shadow: inset 0 -25px 0 #ff4d6d, inset 0 10px 0 #fff0f3, 0 10px 15px rgba(0,0,0,0.5);
+            cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 0.2s;
+        }
+        .cake:active { transform: scale(0.95); }
+
+        .candle {
+            width: 12px; height: 40px; position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
+            background: repeating-linear-gradient(45deg, #fff, #fff 5px, #ff4d6d 5px, #ff4d6d 10px);
+            border-radius: 4px;
+        }
+        .flame {
+            width: 16px; height: 26px; background: #ff9900; position: absolute; top: -28px; left: 50%;
+            transform: translateX(-50%); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: 0 0 20px #ff9900, 0 0 40px #ffcc00; cursor: pointer;
+            animation: flicker 0.5s infinite alternate; transition: opacity 0.3s;
+        }
+        .flame.out { opacity: 0; pointer-events: none; box-shadow: none; }
+
+        /* The slice that appears after cutting */
+        .cake-slice {
+            font-size: 5rem; cursor: pointer; display: none; -webkit-tap-highlight-color: transparent;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); transition: transform 0.2s;
+        }
+        .cake-slice:active { transform: scale(0.9); }
+
+        /* --- LDR Timeline --- */
         .journey-container {
-            width: 100%; max-width: 350px; margin-bottom: 40px; text-align: left;
-            padding: 20px; background: rgba(0,0,0,0.3); border-radius: 20px;
-            border: 1px solid rgba(255, 77, 109, 0.1);
+            width: 100%; max-width: 350px; margin-bottom: 40px; text-align: left; padding: 20px;
+            background: rgba(0,0,0,0.3); border-radius: 20px; border: 1px solid rgba(255, 77, 109, 0.1);
         }
-
-        .journey-container h2 {
-            font-family: 'Dancing Script', cursive; font-size: 2.2rem;
-            color: var(--accent-pink); text-align: center; margin-bottom: 20px;
-        }
-
-        .timeline {
-            position: relative; padding-left: 20px;
-            border-left: 2px solid var(--timeline-line);
-        }
-
-        .timeline-item {
-            position: relative; margin-bottom: 30px;
-        }
-
+        .journey-container h2 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--accent-pink); text-align: center; margin-bottom: 20px; }
+        .timeline { position: relative; padding-left: 20px; border-left: 2px solid var(--timeline-line); }
+        .timeline-item { position: relative; margin-bottom: 30px; }
         .timeline-item:last-child { margin-bottom: 0; }
-
-        .timeline-dot {
-            position: absolute; left: -26px; top: 0;
-            width: 10px; height: 10px; border-radius: 50%;
-            background: var(--accent-pink);
-            box-shadow: 0 0 10px var(--accent-pink);
-        }
-
+        .timeline-dot { position: absolute; left: -26px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--accent-pink); box-shadow: 0 0 10px var(--accent-pink); }
         .timeline-content h3 { font-size: 1.1rem; color: var(--text-light); margin-bottom: 5px; }
         .timeline-content p { font-size: 0.9rem; color: rgba(255, 255, 255, 0.7); line-height: 1.4; }
 
-        /* --- 3D Memory Cards (Modified for LDR) --- */
-        .memories-container {
-            display: flex; flex-direction: column; gap: 25px;
-            width: 100%; max-width: 350px; margin-bottom: 40px;
-        }
-
-        .memory-card {
-            perspective: 1000px; width: 100%; height: 250px;
-            cursor: pointer; -webkit-tap-highlight-color: transparent;
-        }
-
-        .card-inner {
-            position: relative; width: 100%; height: 100%;
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-style: preserve-3d;
-        }
-
+        /* --- 3D Memory Cards --- */
+        .memories-container { display: flex; flex-direction: column; gap: 25px; width: 100%; max-width: 350px; margin-bottom: 40px; }
+        .memory-card { perspective: 1000px; width: 100%; height: 250px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
         .memory-card.flipped .card-inner { transform: rotateY(180deg); }
-
-        .card-front, .card-back {
-            position: absolute; width: 100%; height: 100%;
-            -webkit-backface-visibility: hidden; backface-visibility: hidden;
-            border-radius: 15px; border: 2px solid rgba(255, 77, 109, 0.4);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); overflow: hidden;
-        }
-
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 15px; border: 2px solid rgba(255, 77, 109, 0.4); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); overflow: hidden; }
         .card-front img { width: 100%; height: 100%; object-fit: cover; }
-
-        .card-back {
-            background: linear-gradient(135deg, var(--accent-red), var(--primary-bg));
-            transform: rotateY(180deg); display: flex; align-items: center; justify-content: center;
-            padding: 20px; font-family: 'Dancing Script', cursive; font-size: 1.5rem; text-align: center;
-        }
+        .card-back { background: linear-gradient(135deg, var(--accent-red), var(--primary-bg)); transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; padding: 20px; font-family: 'Dancing Script', cursive; font-size: 1.5rem; text-align: center; }
 
         /* --- Secret Vault --- */
-        .secret-vault {
-            background: rgba(0, 0, 0, 0.4); border-radius: 15px;
-            padding: 20px; width: 100%; max-width: 350px;
-            border: 1px dashed var(--accent-pink); margin-bottom: 40px; text-align: center;
-        }
-
+        .secret-vault { background: rgba(0, 0, 0, 0.4); border-radius: 15px; padding: 20px; width: 100%; max-width: 350px; border: 1px dashed var(--accent-pink); margin-bottom: 40px; text-align: center; }
         .secret-vault h2 { font-size: 1.2rem; margin-bottom: 15px; color: var(--text-light); }
-        
-        .secret-input {
-            width: 100%; padding: 12px; border-radius: 8px;
-            border: 1px solid var(--accent-pink); background: #1a050a;
-            color: white; font-family: 'Poppins', sans-serif;
-            text-align: center; margin-bottom: 15px; font-size: 1.1rem;
-            letter-spacing: 2px;
-        }
-
-        .secret-btn {
-            background: var(--accent-pink); color: white; border: none;
-            padding: 10px 20px; border-radius: 8px; font-size: 1rem;
-            cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600;
-        }
-
-        #secret-message {
-            display: none; margin-top: 15px; padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-family: 'Dancing Script', cursive; font-size: 1.5rem; color: var(--accent-pink);
-        }
+        .secret-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--accent-pink); background: #1a050a; color: white; font-family: 'Poppins', sans-serif; text-align: center; margin-bottom: 15px; font-size: 1.1rem; letter-spacing: 2px; }
+        .secret-btn { background: var(--accent-pink); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 1rem; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600; }
+        #secret-message { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-family: 'Dancing Script', cursive; font-size: 1.5rem; color: var(--accent-pink); }
 
         /* --- Final Gift --- */
         .gift-container { margin-bottom: 80px; text-align: center; width: 100%; max-width: 350px; }
         .gift-box { font-size: 4rem; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        
-        .coupon {
-            display: none; background: #fff; color: #1a050a;
-            padding: 20px; border-radius: 10px; margin-top: 20px;
-            border: 3px dashed var(--accent-red); transform: scale(0);
-        }
-
+        .coupon { display: none; background: #fff; color: #1a050a; padding: 20px; border-radius: 10px; margin-top: 20px; border: 3px dashed var(--accent-red); transform: scale(0); }
         .coupon h3 { font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: var(--accent-red); margin-bottom: 10px;}
 
         /* --- Animations --- */
         @keyframes heartbeat { 0%, 28%, 70% { transform: scale(1); } 14%, 42% { transform: scale(1.15); } }
         @keyframes fadeInOut { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
-
-        .particle {
-            position: fixed; font-size: 1.5rem; pointer-events: none;
-            animation: floatUp linear forwards; z-index: 1;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-20vh) scale(1.2) rotate(360deg); opacity: 0; }
-        }
+        @keyframes flicker { 0% { opacity: 1; transform: translateX(-50%) scale(1); } 100% { opacity: 0.8; transform: translateX(-50%) scale(1.1) skewX(2deg); } }
+        .particle { position: fixed; font-size: 1.5rem; pointer-events: none; animation: floatUp linear forwards; z-index: 1; }
+        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; } 100% { transform: translateY(-20vh) scale(1.2) rotate(360deg); opacity: 0; } }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <audio id="bg-music" src="YOUR_AUDIO_FILE.mp3" preload="auto"></audio>
+    <!-- Audio Tracks -->
+    <audio id="bg-music" src="YOUR_AMBIENT_MUSIC.mp3" preload="auto" loop></audio>
+    <audio id="hbd-song" src="YOUR_HAPPY_BIRTHDAY_SONG.mp3" preload="auto"></audio>
 
     <div id="intro-screen" class="screen">
         <div class="heart-button" id="open-btn">❤️</div>
@@ -233,51 +178,49 @@
             I wish I could be there to hold you today. Until I can wrap my arms around you, I made this little digital space just for us. I hope it makes you smile! 💖
         </div>
 
-        <!-- NEW: Our Journey Track -->
+        <!-- NEW: Interactive Virtual Cake Section -->
+        <div class="interactive-cake-section reveal-item">
+            <h2>Make a Wish 🎂</h2>
+            <p class="cake-instruction-text" id="cake-instruction">Close your eyes, make a wish, and tap the flame to blow it out!</p>
+            
+            <div class="cake-stage">
+                <!-- The CSS Cake -->
+                <div class="cake" id="whole-cake">
+                    <div class="candle">
+                        <div class="flame" id="flame"></div>
+                    </div>
+                </div>
+                <!-- The Slice (Hidden initially) -->
+                <div class="cake-slice" id="cake-slice">🍰</div>
+            </div>
+        </div>
+
         <div class="journey-container reveal-item">
             <h2>Our Track ✈️</h2>
             <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h3>How We Connected</h3>
-                        <p>That very first conversation that changed everything. I knew you were special instantly.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h3>Late Night Calls</h3>
-                        <p>Falling asleep on the phone, timezones disappearing, and talking about everything and nothing.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <h3>The Future</h3>
-                        <p>Counting down the days until the screen isn't between us anymore. I can't wait.</p>
-                    </div>
-                </div>
+                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">
+                    <h3>How We Connected</h3><p>That very first conversation that changed everything. I knew you were special instantly.</p>
+                </div></div>
+                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">
+                    <h3>Late Night Calls</h3><p>Falling asleep on the phone, timezones disappearing, and talking about everything and nothing.</p>
+                </div></div>
+                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">
+                    <h3>The Future</h3><p>Counting down the days until the screen isn't between us anymore. I can't wait.</p>
+                </div></div>
             </div>
         </div>
 
-        <!-- 3D Memory Cards -->
         <div class="memories-container reveal-item">
-            <div class="memory-card">
-                <div class="card-inner">
-                    <div class="card-front"><img src="https://via.placeholder.com/400x300/ff4d6d/ffffff?text=Screenshot+of+us" alt="Video Call Memory"></div>
-                    <div class="card-back">My favorite face on FaceTime ✨</div>
-                </div>
-            </div>
-            <div class="memory-card">
-                <div class="card-inner">
-                    <div class="card-front"><img src="https://via.placeholder.com/400x300/c9184a/ffffff?text=Another+Photo" alt="Memory"></div>
-                    <div class="card-back">Worth every mile between us 🌍</div>
-                </div>
-            </div>
+            <div class="memory-card"><div class="card-inner">
+                <div class="card-front"><img src="https://via.placeholder.com/400x300/ff4d6d/ffffff?text=Screenshot+of+us" alt="Call Memory"></div>
+                <div class="card-back">My favorite face on FaceTime ✨</div>
+            </div></div>
+            <div class="memory-card"><div class="card-inner">
+                <div class="card-front"><img src="https://via.placeholder.com/400x300/c9184a/ffffff?text=Another+Photo" alt="Memory"></div>
+                <div class="card-back">Worth every mile between us 🌍</div>
+            </div></div>
         </div>
 
-        <!-- The Date Lock -->
         <div class="secret-vault reveal-item">
             <h2>🔒 Secret Memory Lock</h2>
             <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 10px;">The day the world got a little brighter.<br>Format: DD/MM/YYYY</p>
@@ -286,7 +229,6 @@
             <div id="secret-message">Every day since 15/07/2001 has been leading up to us. I love you! 💕</div>
         </div>
 
-        <!-- The LDR Gift -->
         <div class="gift-container reveal-item">
             <h2>🎁 One Last Surprise</h2>
             <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 10px;">Tap the box</p>
@@ -301,8 +243,10 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Intro & Master Timeline ---
             const openBtn = document.getElementById('open-btn');
             const bgMusic = document.getElementById('bg-music');
+            const hbdSong = document.getElementById('hbd-song');
             const masterTl = gsap.timeline({ paused: true });
 
             masterTl.to("#intro-screen", { opacity: 0, duration: 0.5, onComplete: () => document.getElementById('intro-screen').style.display = 'none' });
@@ -321,21 +265,86 @@
                     .from(".reveal-item", { y: 40, opacity: 0, duration: 0.8, stagger: 0.15, ease: "power2.out", onComplete: startHeartRain }, "-=0.2");
 
             openBtn.addEventListener('click', () => {
+                // Uncomment this if you add a background ambient track
                 // bgMusic.play().catch(e => console.log("Audio play prevented"));
                 masterTl.play();
             });
 
-            // Card Flips
+            // --- NEW: INTERACTIVE CAKE LOGIC ---
+            const flame = document.getElementById('flame');
+            const wholeCake = document.getElementById('whole-cake');
+            const cakeSlice = document.getElementById('cake-slice');
+            const cakeInstruction = document.getElementById('cake-instruction');
+            let cakeState = 0; // 0: lit, 1: blown out, 2: cut, 3: bitten
+
+            // Step 1: Blow out the candle
+            flame.addEventListener('click', (e) => {
+                e.stopPropagation(); // Stop the cake underneath from being clicked yet
+                if(cakeState === 0) {
+                    flame.classList.add('out');
+                    cakeState = 1;
+                    
+                    // Fade text out and change it
+                    gsap.to(cakeInstruction, {opacity: 0, duration: 0.3, onComplete: () => {
+                        cakeInstruction.innerHTML = "Yay! 🥳<br>Now tap the cake to cut it!";
+                        gsap.to(cakeInstruction, {opacity: 1, duration: 0.3});
+                    }});
+                }
+            });
+
+            // Step 2: Cut the cake
+            wholeCake.addEventListener('click', () => {
+                if(cakeState === 1) {
+                    cakeState = 2;
+                    
+                    // Animate whole cake disappearing and slice appearing
+                    gsap.to(wholeCake, { scale: 0, opacity: 0, duration: 0.4, ease: "back.in(1.5)", onComplete: () => {
+                        wholeCake.style.display = 'none';
+                        cakeSlice.style.display = 'block';
+                        gsap.fromTo(cakeSlice, {scale: 0, rotation: -20}, {scale: 1, rotation: 0, duration: 0.6, ease: "elastic.out(1, 0.5)"});
+                        
+                        gsap.to(cakeInstruction, {opacity: 0, duration: 0.3, onComplete: () => {
+                            cakeInstruction.innerHTML = "Perfect cut! 🔪<br>Say Aaa! Tap the slice to take a virtual bite 🥺";
+                            gsap.to(cakeInstruction, {opacity: 1, duration: 0.3});
+                        }});
+                    }});
+                }
+            });
+
+            // Step 3: Take a bite and Play Song!
+            cakeSlice.addEventListener('click', () => {
+                if(cakeState === 2) {
+                    cakeState = 3;
+                    
+                    // Change to a dirty plate or just animate it
+                    gsap.to(cakeSlice, { y: -20, scale: 1.1, duration: 0.2, yoyo: true, repeat: 1 });
+                    cakeSlice.innerText = "🍽️"; // Swaps to empty plate icon
+                    
+                    gsap.to(cakeInstruction, {opacity: 0, duration: 0.3, onComplete: () => {
+                        cakeInstruction.innerHTML = "Yummy! Happy Birthday my love! 🎉";
+                        cakeInstruction.style.fontWeight = "bold";
+                        gsap.to(cakeInstruction, {opacity: 1, duration: 0.3});
+                    }});
+
+                    // PLAY HAPPY BIRTHDAY SONG
+                    // This will work because the user actively tapped the screen!
+                    if(bgMusic) bgMusic.pause(); // Pause ambient track if playing
+                    hbdSong.play().catch(e => console.log("HBD Audio play prevented"));
+
+                    // Celebrate!
+                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 }, colors: ['#ff4d6d', '#fff', '#ffcc00'] });
+                }
+            });
+
+            // --- Card Flips ---
             document.querySelectorAll('.memory-card').forEach(card => {
                 card.addEventListener('click', () => card.classList.toggle('flipped'));
             });
 
-            // --- DATE LOCK LOGIC ---
+            // --- Date Lock Logic ---
             const secretSubmit = document.getElementById('secret-submit');
             const secretInput = document.getElementById('secret-input');
             const secretMessage = document.getElementById('secret-message');
-            
-            // The secret password is exactly the date you requested
             const correctAnswer = "15/07/2001"; 
 
             secretSubmit.addEventListener('click', () => {
@@ -352,7 +361,7 @@
                 }
             });
 
-            // --- FINAL GIFT LOGIC ---
+            // --- Final Gift Logic ---
             const finalGift = document.getElementById('final-gift');
             const giftCoupon = document.getElementById('gift-coupon');
             let giftOpened = false;
@@ -364,12 +373,8 @@
                 gsap.to(finalGift, { rotation: 15, yoyo: true, repeat: 3, duration: 0.1, onComplete: () => {
                     finalGift.style.display = 'none'; 
                     giftCoupon.style.display = 'block'; 
-                    
                     gsap.to(giftCoupon, { scale: 1, rotation: 360, duration: 0.8, ease: "back.out(1.5)" });
-
-                    const duration = 3000;
-                    const end = Date.now() + duration;
-
+                    const end = Date.now() + 3000;
                     (function frame() {
                         confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff4d6d', '#c9184a', '#ffb3c1'] });
                         confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff4d6d', '#c9184a', '#ffb3c1'] });
@@ -378,9 +383,9 @@
                 }});
             });
 
-            // Particles Background
+            // --- Background Particles ---
             function startHeartRain() {
-                const hearts = ['❤️', '💖', '💕', '✈️', '🌸']; // Added an airplane emoji for LDR!
+                const hearts = ['❤️', '💖', '💕', '✈️', '🌸'];
                 setInterval(() => {
                     const particle = document.createElement('div');
                     particle.classList.add('particle');
