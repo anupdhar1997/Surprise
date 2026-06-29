@@ -6,6 +6,7 @@
     <title>Happy Birthday! ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
+    <!-- GSAP & Canvas Confetti -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -19,7 +20,7 @@
             --glass-border: rgba(255, 77, 109, 0.2);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: pan-y; }
 
         body {
             background-color: var(--primary-bg); color: var(--text-light);
@@ -33,164 +34,85 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
 
+        /* --- Screen Navigation System --- */
         .screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none;
-            flex-direction: column; justify-content: center; align-items: center; opacity: 0; z-index: 10;
+            flex-direction: column; justify-content: center; align-items: center; opacity: 0; 
+            padding: 20px; overflow-y: auto; overflow-x: hidden;
         }
+        .screen::-webkit-scrollbar { display: none; }
 
         #intro-screen { display: flex; opacity: 1; z-index: 30; }
         #anticipation-screen { background: #050102; z-index: 20; }
-        #surprise-screen {
-            padding: 50px 20px; text-align: center; z-index: 10;
-            justify-content: flex-start; overflow-y: auto; overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-        #surprise-screen::-webkit-scrollbar { display: none; }
-
-        /* --- Intro & Typography --- */
-        .heart-button {
-            font-size: 5rem; cursor: pointer; animation: heartbeat 1.5s infinite;
-            filter: drop-shadow(0 0 30px rgba(255, 42, 95, 0.8)); -webkit-tap-highlight-color: transparent;
-        }
-        .instruction {
-            margin-top: 20px; font-size: 1rem; letter-spacing: 3px; color: var(--accent-pink);
-            text-transform: uppercase; animation: fadeInOut 2s infinite; font-weight: 600;
-        }
-        .anticipation-text {
-            position: absolute; font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--text-light); 
-            opacity: 0; text-align: center; width: 90%; text-shadow: 0 0 20px var(--accent-pink);
-        }
-        h1 { font-family: 'Dancing Script', cursive; font-size: 4rem; color: var(--accent-pink); margin-bottom: 5px; text-shadow: 0 0 20px rgba(255, 42, 95, 0.5); }
-        .ldr-subtitle { font-size: 0.9rem; color: rgba(255,255,255,0.7); font-style: italic; margin-bottom: 30px; }
         
-        .message-box { padding: 30px 20px; width: 100%; max-width: 360px; line-height: 1.7; font-size: 1.05rem; margin-bottom: 40px; }
+        /* The 4 Journey Pages */
+        #page-1, #page-2, #page-3, #page-4 { z-index: 10; justify-content: flex-start; padding-top: 40px; padding-bottom: 50px; }
 
-        /* --- 3D INTERACTIVE CAKE SECTION --- */
-        .interactive-cake-section {
-            padding: 40px 20px; width: 100%; max-width: 360px; margin-bottom: 50px;
-            text-align: center; position: relative; 
-            overflow: visible; min-height: 400px; 
-            display: flex; flex-direction: column; align-items: center;
-        }
-        .interactive-cake-section h2 { 
-            font-family: 'Dancing Script', cursive; font-size: 2.5rem; 
-            color: var(--text-light); margin-bottom: 10px; text-shadow: 0 0 10px var(--accent-pink); 
-        }
-        .mic-btn {
-            background: linear-gradient(45deg, var(--accent-red), var(--accent-pink)); color: white;
-            border: none; padding: 12px 20px; border-radius: 30px; font-weight: 600; font-family: 'Poppins';
-            margin-bottom: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 42, 95, 0.4);
-            animation: pulse 2s infinite; -webkit-tap-highlight-color: transparent;
-            z-index: 10; position: relative;
-        }
-        .cake-instruction-text { 
-            font-size: 1rem; color: var(--text-light); margin-bottom: 30px; 
-            height: 50px; font-weight: 300; z-index: 10; position: relative; 
-        }
+        /* --- Universal Typography --- */
+        h1 { font-family: 'Dancing Script', cursive; font-size: 3.5rem; color: var(--accent-pink); margin-bottom: 5px; text-shadow: 0 0 20px rgba(255, 42, 95, 0.5); text-align: center; }
+        .ldr-subtitle { font-size: 0.9rem; color: rgba(255,255,255,0.7); font-style: italic; margin-bottom: 20px; text-align: center; }
+        h2 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--text-light); margin-bottom: 10px; text-shadow: 0 0 10px var(--accent-pink); text-align: center; }
+        .message-box { padding: 25px 20px; width: 100%; max-width: 360px; line-height: 1.6; font-size: 1rem; margin-bottom: 20px; text-align: center; }
 
-        /* 3D Cake Scene */
-        .cake-stage {
-            position: relative; height: 200px; width: 100%; display: flex; 
-            justify-content: center; align-items: center;
-            perspective: 1000px; z-index: 5;
-        }
-        .cake-wrapper { position: relative; width: 160px; height: 120px; transform-style: preserve-3d; transform: rotateX(15deg); }
-        .cake-half {
-            position: absolute; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, #ffb3c1 0%, #ff758f 100%);
-            border-radius: 15px; box-shadow: inset 0 10px 0 #fff0f3, 0 15px 20px rgba(0,0,0,0.6);
-            transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s;
-        }
+        /* --- Intro Elements --- */
+        .heart-button { font-size: 5rem; cursor: pointer; animation: heartbeat 1.5s infinite; filter: drop-shadow(0 0 30px rgba(255, 42, 95, 0.8)); -webkit-tap-highlight-color: transparent; }
+        .instruction { margin-top: 20px; font-size: 1rem; letter-spacing: 3px; color: var(--accent-pink); text-transform: uppercase; animation: fadeInOut 2s infinite; font-weight: 600; }
+        .anticipation-text { position: absolute; font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--text-light); opacity: 0; text-align: center; width: 90%; text-shadow: 0 0 20px var(--accent-pink); }
+
+        /* --- PAGE 1: Cake & Blow --- */
+        .interactive-cake-section { padding: 30px 20px; width: 100%; max-width: 360px; text-align: center; position: relative; overflow: visible; min-height: 380px; display: flex; flex-direction: column; align-items: center; }
+        .mic-btn { background: linear-gradient(45deg, var(--accent-red), var(--accent-pink)); color: white; border: none; padding: 12px 20px; border-radius: 30px; font-weight: 600; font-family: 'Poppins'; margin-bottom: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 42, 95, 0.4); animation: pulse 2s infinite; -webkit-tap-highlight-color: transparent; z-index: 10; position: relative; }
+        .cake-instruction-text { font-size: 0.95rem; color: var(--text-light); margin-bottom: 30px; height: 50px; font-weight: 300; z-index: 10; position: relative; }
+        .cake-stage { position: relative; height: 180px; width: 100%; display: flex; justify-content: center; align-items: center; perspective: 1000px; z-index: 5; }
+        .cake-wrapper { position: relative; width: 150px; height: 100px; transform-style: preserve-3d; transform: rotateX(15deg); }
+        .cake-half { position: absolute; width: 100%; height: 100%; background: linear-gradient(to bottom, #ffb3c1 0%, #ff758f 100%); border-radius: 15px; box-shadow: inset 0 10px 0 #fff0f3, 0 15px 20px rgba(0,0,0,0.6); transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s; }
         .cake-left { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); }
         .cake-right { clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); }
-
-        .candle {
-            width: 12px; height: 45px; position: absolute; top: -45px; left: 50%; transform: translateX(-50%);
-            background: repeating-linear-gradient(45deg, #fff, #fff 4px, #ff2a5f 4px, #ff2a5f 8px);
-            border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); z-index: 5;
-        }
-        .flame {
-            width: 18px; height: 30px; background: #ffcc00; position: absolute; top: -32px; left: 50%;
-            transform: translateX(-50%); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            box-shadow: 0 0 20px #ff9900, 0 0 50px #ffcc00, inset 0 0 10px #fff; cursor: pointer;
-            animation: flicker 0.4s infinite alternate; transition: all 0.3s;
-        }
+        .candle { width: 10px; height: 40px; position: absolute; top: -40px; left: 50%; transform: translateX(-50%); background: repeating-linear-gradient(45deg, #fff, #fff 4px, #ff2a5f 4px, #ff2a5f 8px); border-radius: 5px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); z-index: 5; }
+        .flame { width: 16px; height: 26px; background: #ffcc00; position: absolute; top: -28px; left: 50%; transform: translateX(-50%); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; box-shadow: 0 0 20px #ff9900, 0 0 50px #ffcc00, inset 0 0 10px #fff; cursor: pointer; animation: flicker 0.4s infinite alternate; transition: all 0.3s; }
         .flame.out { opacity: 0; transform: translateX(-50%) scale(0) translateY(-20px); }
-
-        .knife {
-            position: absolute; font-size: 3rem; top: -80px; left: 50%; transform: translateX(-50%) rotate(180deg);
-            opacity: 0; pointer-events: none; z-index: 10; filter: drop-shadow(0 10px 5px rgba(0,0,0,0.5));
-        }
-
-        .cake-slice-3d {
-            position: absolute; font-size: 6rem; opacity: 0; pointer-events: none;
-            transform: scale(0.1) translateZ(-500px); filter: drop-shadow(0 20px 20px rgba(0,0,0,0.8));
-            transition: clip-path 0.3s; cursor: pointer; -webkit-tap-highlight-color: transparent; z-index: 20;
-        }
+        .knife { position: absolute; font-size: 3rem; top: -80px; left: 50%; transform: translateX(-50%) rotate(180deg); opacity: 0; pointer-events: none; z-index: 10; filter: drop-shadow(0 10px 5px rgba(0,0,0,0.5)); }
+        .cake-slice-3d { position: absolute; font-size: 5rem; opacity: 0; pointer-events: none; transform: scale(0.1) translateZ(-500px); filter: drop-shadow(0 20px 20px rgba(0,0,0,0.8)); transition: clip-path 0.3s; cursor: pointer; -webkit-tap-highlight-color: transparent; z-index: 20; }
         .bitten { clip-path: polygon(0 0, 100% 0, 100% 50%, 80% 60%, 100% 80%, 100% 100%, 0 100%); }
+        
+        #giant-hbd { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-family: 'Dancing Script', cursive; font-size: 4rem; color: #ffcc00; text-shadow: 0 0 30px #ff2a5f, 0 0 10px #fff; z-index: 100; pointer-events: none; opacity: 0; text-align: center; width: 100%; line-height: 1.2; }
+        
+        .next-btn { display: none; background: rgba(255, 42, 95, 0.2); border: 1px solid var(--accent-pink); color: white; padding: 12px 30px; border-radius: 30px; font-size: 1.1rem; font-family: 'Poppins'; font-weight: 600; cursor: pointer; box-shadow: 0 0 15px rgba(255, 42, 95, 0.4); margin-top: 20px; transition: all 0.2s; opacity: 0; }
+        .next-btn:active { transform: scale(0.95); background: var(--accent-pink); }
 
-        #giant-hbd {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            font-family: 'Dancing Script', cursive; font-size: 5rem; color: #ffcc00;
-            text-shadow: 0 0 30px #ff2a5f, 0 0 10px #fff; z-index: 100; pointer-events: none; opacity: 0;
-            text-align: center; width: 100%; line-height: 1.2;
-        }
-
-        /* --- Scroll Arrow --- */
-        #scroll-arrow {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            font-family: 'Poppins', sans-serif; font-size: 1.5rem; color: #ffb3c1;
-            z-index: 90; display: none; opacity: 0; animation: bounce 1.5s infinite;
-            text-shadow: 0 0 10px var(--accent-pink); pointer-events: none;
-        }
-
-        /* --- LDR Sections --- */
-        .journey-container { width: 100%; max-width: 360px; margin-bottom: 50px; text-align: left; padding: 30px 20px; }
-        .journey-container h2 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--accent-pink); text-align: center; margin-bottom: 25px; }
+        /* --- PAGE 2: Timeline & Swipe Puzzle --- */
+        .journey-container { width: 100%; max-width: 360px; text-align: left; padding: 30px 20px; margin-bottom: 20px; }
         .timeline { position: relative; padding-left: 20px; border-left: 2px solid var(--accent-pink); }
-        .timeline-item { position: relative; margin-bottom: 35px; }
+        .timeline-item { position: relative; margin-bottom: 30px; }
         .timeline-item:last-child { margin-bottom: 0; }
         .timeline-dot { position: absolute; left: -26px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--accent-pink); box-shadow: 0 0 15px var(--accent-pink); }
-        .timeline-content h3 { font-size: 1.15rem; color: var(--text-light); margin-bottom: 5px; font-weight: 600;}
-        .timeline-content p { font-size: 0.95rem; color: rgba(255, 255, 255, 0.7); line-height: 1.5; }
+        .timeline-content h3 { font-size: 1.1rem; color: var(--text-light); margin-bottom: 5px; font-weight: 600;}
+        .timeline-content p { font-size: 0.9rem; color: rgba(255, 255, 255, 0.7); line-height: 1.5; }
 
-        .memories-container { display: flex; flex-direction: column; gap: 30px; width: 100%; max-width: 360px; margin-bottom: 50px; }
-        .memory-card { perspective: 1000px; width: 100%; height: 260px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        /* NEW: Swipe to Fly Puzzle */
+        .swipe-puzzle { width: 100%; max-width: 360px; background: rgba(0,0,0,0.4); border-radius: 40px; border: 1px solid var(--glass-border); padding: 10px; position: relative; text-align: center; overflow: hidden; }
+        .swipe-text { position: absolute; width: 100%; line-height: 50px; left: 0; top: 10px; color: rgba(255,255,255,0.4); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; pointer-events: none; z-index: 1; }
+        .swipe-thumb { width: 50px; height: 50px; background: var(--accent-pink); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; position: relative; z-index: 2; cursor: pointer; box-shadow: 0 0 15px var(--accent-pink); touch-action: none; }
+
+        /* --- PAGE 3: Memories & Hold Puzzle --- */
+        .memories-container { display: flex; flex-direction: column; gap: 25px; width: 100%; max-width: 360px; margin-bottom: 30px; }
+        .memory-card { perspective: 1000px; width: 100%; height: 220px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
         .memory-card.flipped .card-inner { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5); overflow: hidden; }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); overflow: hidden; }
         .card-front img { width: 100%; height: 100%; object-fit: cover; }
         .card-back { background: var(--glass-bg); backdrop-filter: blur(15px); transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; padding: 20px; font-family: 'Dancing Script', cursive; font-size: 1.8rem; text-align: center; color: var(--accent-pink); }
 
-        /* --- NEW: Secret Vault (Hold to Unlock) --- */
-        .secret-vault { padding: 30px 20px; width: 100%; max-width: 360px; margin-bottom: 50px; text-align: center; }
-        .secret-vault h2 { font-size: 1.6rem; margin-bottom: 10px; color: var(--accent-pink); font-family: 'Dancing Script', cursive;}
-        
-        .hold-btn-container {
-            position: relative; width: 90px; height: 90px; margin: 20px auto;
-        }
-        #hold-btn {
-            width: 100%; height: 100%; border-radius: 50%; background: rgba(0,0,0,0.5); 
-            border: 2px solid var(--accent-pink); font-size: 2.5rem; cursor: pointer; 
-            display: flex; align-items: center; justify-content: center;
-            -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; 
-            z-index: 2; position: relative; transition: transform 0.1s;
-            box-shadow: 0 0 15px rgba(255, 42, 95, 0.3); -webkit-tap-highlight-color: transparent;
-        }
-        .progress-ring {
-            position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
-            border-radius: 50%; border: 4px solid transparent; border-top-color: var(--text-light);
-            border-right-color: var(--text-light); opacity: 0; transform: rotate(0deg); 
-            z-index: 1; pointer-events: none;
-        }
+        .secret-vault { padding: 30px 20px; width: 100%; max-width: 360px; text-align: center; }
+        .hold-btn-container { position: relative; width: 80px; height: 80px; margin: 15px auto; }
+        #hold-btn { width: 100%; height: 100%; border-radius: 50%; background: rgba(0,0,0,0.5); border: 2px solid var(--accent-pink); font-size: 2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; z-index: 2; position: relative; transition: transform 0.1s; box-shadow: 0 0 15px rgba(255, 42, 95, 0.3); -webkit-tap-highlight-color: transparent; }
+        .progress-ring { position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px; border-radius: 50%; border: 4px solid transparent; border-top-color: var(--text-light); border-right-color: var(--text-light); opacity: 0; transform: rotate(0deg); z-index: 1; pointer-events: none; }
 
-        #secret-message { display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border); font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: var(--text-light); }
-
-        /* --- Gift --- */
-        .gift-container { margin-bottom: 100px; text-align: center; width: 100%; max-width: 360px; }
-        .gift-box { font-size: 5rem; cursor: pointer; -webkit-tap-highlight-color: transparent; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)); transition: transform 0.2s; }
+        /* --- PAGE 4: Final Gift --- */
+        .gift-container { text-align: center; width: 100%; max-width: 360px; margin-top: 50px; }
+        .gift-box { font-size: 6rem; cursor: pointer; -webkit-tap-highlight-color: transparent; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)); transition: transform 0.2s; animation: floatUp 3s infinite alternate ease-in-out; }
         .gift-box:active { transform: scale(0.9); }
-        .coupon { display: none; background: rgba(255,255,255,0.9); color: #0f0508; padding: 30px 20px; border-radius: 15px; margin-top: 20px; border: 3px dashed var(--accent-red); transform: scale(0); box-shadow: 0 20px 30px rgba(0,0,0,0.6); }
+        .coupon { display: none; background: rgba(255,255,255,0.95); color: #0f0508; padding: 30px 20px; border-radius: 15px; margin-top: 20px; border: 3px dashed var(--accent-red); transform: scale(0); box-shadow: 0 20px 30px rgba(0,0,0,0.6); position: relative; }
         .coupon h3 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--accent-red); margin-bottom: 15px;}
 
         /* --- Animations --- */
@@ -198,41 +120,38 @@
         @keyframes fadeInOut { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 42, 95, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255, 42, 95, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 42, 95, 0); } }
         @keyframes flicker { 0% { opacity: 1; transform: translateX(-50%) scale(1); } 100% { opacity: 0.8; transform: translateX(-50%) scale(1.1) skewX(3deg); } }
-        @keyframes bounce { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 15px); } }
-        .particle { position: fixed; pointer-events: none; animation: floatUp linear forwards; z-index: 1; }
-        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; } 100% { transform: translateY(-20vh) scale(1.2) rotate(360deg); opacity: 0; } }
+        .particle { position: fixed; pointer-events: none; animation: drift linear forwards; z-index: 1; }
+        @keyframes drift { 0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; } 100% { transform: translateY(-20vh) scale(1.2) rotate(360deg); opacity: 0; } }
         .wind-particle { position: absolute; background: white; border-radius: 50%; opacity: 0.5; filter: blur(2px); z-index: 20;}
-        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <audio id="hbd-song" src="happy-birthday.mp3" preload="auto"></audio>
-
     <div id="giant-hbd">Happy<br>Birthday! 🎉</div>
-    <div id="scroll-arrow">⬇️</div>
 
+    <!-- Intro Trigger -->
     <div id="intro-screen" class="screen">
         <div class="heart-button" id="open-btn">❤️</div>
         <div class="instruction">Tap to Open</div>
     </div>
 
+    <!-- Anticipation -->
     <div id="anticipation-screen" class="screen">
         <div class="anticipation-text">Miles apart...</div>
         <div class="anticipation-text">But right here in my heart...</div>
         <div class="anticipation-text">Today is all about you.</div>
     </div>
 
-    <div id="surprise-screen" class="screen">
+    <!-- ================= PAGE 1 ================= -->
+    <div id="page-1" class="screen">
         <h1>Happy Birthday!</h1>
-        <div class="ldr-subtitle">Distance means so little when someone means so much.</div>
-        
-        <div class="message-box glass reveal-item">
+        <div class="message-box glass">
             My love,<br><br>
-            I wish I could be there to hold you today. Until I can wrap my arms around you, I made this little digital space just for us. I hope it makes you smile! 💖
+            I wish I could be there to hold you today. Until I can wrap my arms around you, I made this little digital space just for us! 💖
         </div>
 
-        <div class="interactive-cake-section glass reveal-item">
+        <div class="interactive-cake-section glass">
             <h2>Make a Wish 🎂</h2>
             <button class="mic-btn" id="mic-btn">🎙️ Enable Mic to Blow</button>
             <p class="cake-instruction-text" id="cake-instruction">Make a wish, then <b>blow into your phone</b> (or tap the flame) to put it out!</p>
@@ -241,17 +160,23 @@
                 <div class="cake-wrapper" id="cake-wrapper">
                     <div class="cake-half cake-left" id="cake-left"></div>
                     <div class="cake-half cake-right" id="cake-right"></div>
-                    <div class="candle" id="candle">
-                        <div class="flame" id="flame"></div>
-                    </div>
+                    <div class="candle" id="candle"><div class="flame" id="flame"></div></div>
                 </div>
                 <div class="knife" id="knife">🔪</div>
                 <div class="cake-slice-3d" id="cake-slice">🍰</div>
             </div>
+            
+            <!-- Puzzle 1 Reward: Hidden Next Button -->
+            <button class="next-btn" id="btn-next-1">Next Chapter ➔</button>
         </div>
+    </div>
 
-        <div class="journey-container glass reveal-item">
-            <h2>Our Track ✈️</h2>
+    <!-- ================= PAGE 2 ================= -->
+    <div id="page-2" class="screen">
+        <h1 style="font-size: 2.8rem;">Our Journey</h1>
+        <div class="ldr-subtitle">Distance means so little when someone means so much.</div>
+        
+        <div class="journey-container glass">
             <div class="timeline">
                 <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">
                     <h3>How We Connected</h3><p>That very first conversation that changed everything. I knew you were special instantly.</p>
@@ -265,7 +190,18 @@
             </div>
         </div>
 
-        <div class="memories-container reveal-item">
+        <!-- Puzzle 2: Swipe to Fly -->
+        <div class="swipe-puzzle">
+            <div class="swipe-text">Swipe to Fly ➔</div>
+            <div class="swipe-thumb" id="swipe-thumb">✈️</div>
+        </div>
+    </div>
+
+    <!-- ================= PAGE 3 ================= -->
+    <div id="page-3" class="screen">
+        <h1 style="font-size: 2.8rem;">Favorite Memories</h1>
+        
+        <div class="memories-container">
             <div class="memory-card"><div class="card-inner">
                 <div class="card-front"><img src="https://via.placeholder.com/400x300/ff2a5f/ffffff?text=Screenshot+of+us" alt="Call Memory"></div>
                 <div class="card-back">My favorite face on FaceTime ✨</div>
@@ -276,33 +212,50 @@
             </div></div>
         </div>
 
-        <div class="secret-vault glass reveal-item">
-            <h2>🔒 Our Secret</h2>
-            <p id="secret-hint" style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 5px;">Press and hold the heart<br>to unlock a promise.</p>
+        <!-- Puzzle 3: Hold to Unlock -->
+        <div class="secret-vault glass">
+            <h2>🔒 Unlock the Final Surprise</h2>
+            <p id="secret-hint" style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 5px;">Press and hold the heart<br>for 2 seconds.</p>
             
-            <div class="hold-btn-container" id="vault-lock">
+            <div class="hold-btn-container">
                 <div class="progress-ring"></div>
                 <div id="hold-btn">💖</div>
             </div>
-            
-            <div id="secret-message">Every day since 15/07/2001 has been leading up to us. I promise to always love you! 💕</div>
         </div>
+    </div>
 
-        <div class="gift-container reveal-item">
-            <h2 style="font-family: 'Dancing Script'; font-size: 2.5rem; color: var(--accent-pink); margin-bottom: 10px;">One Last Surprise</h2>
-            <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 20px;">Tap the box</p>
+    <!-- ================= PAGE 4 ================= -->
+    <div id="page-4" class="screen">
+        <div class="gift-container">
+            <h1 style="font-size: 3.5rem;">For You</h1>
+            <p style="font-size: 1rem; opacity: 0.8; margin-bottom: 30px;">Tap the box</p>
             <div class="gift-box" id="final-gift">💝</div>
             
             <div class="coupon" id="gift-coupon">
                 <h3>Virtual Movie Date 🍿</h3>
                 <p><strong>Good for ONE cozy video-call movie night!</strong><br><br>Plus, I'm ordering your favorite food directly to your door. Dinner is on me tonight! 🥂</p>
+                <p style="margin-top: 20px; font-family: 'Dancing Script', cursive; font-size: 1.5rem; color: var(--accent-pink);">I love you!</p>
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Master Intro Timeline ---
+            
+            // --- Navigation Helper Function ---
+            // Slides the current screen out to the left, and brings the next one in from the right
+            function goToNextPage(currentId, nextId) {
+                const currentScreen = document.getElementById(currentId);
+                const nextScreen = document.getElementById(nextId);
+                
+                gsap.to(currentScreen, { x: -100, opacity: 0, duration: 0.5, onComplete: () => {
+                    currentScreen.style.display = 'none';
+                    nextScreen.style.display = 'flex';
+                    gsap.fromTo(nextScreen, { x: 100, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5 });
+                }});
+            }
+
+            // --- INTRO SEQUENCE ---
             const openBtn = document.getElementById('open-btn');
             const masterTl = gsap.timeline({ paused: true });
 
@@ -316,25 +269,15 @@
             });
 
             masterTl.set("#anticipation-screen", { display: 'none' })
-                    .set("#surprise-screen", { display: 'flex', opacity: 1 });
+                    .set("#page-1", { display: 'flex', opacity: 1 });
 
-            masterTl.from("#surprise-screen h1, .ldr-subtitle", { y: -30, opacity: 0, duration: 1, stagger: 0.2, ease: "back.out(1.7)" })
-                    .from(".reveal-item", { y: 40, opacity: 0, duration: 0.8, stagger: 0.15, ease: "power2.out", onComplete: startHeartRain }, "-=0.2");
+            // Animate Page 1 entrance
+            masterTl.from("#page-1 > *", { y: 30, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power2.out", onComplete: startHeartRain });
 
             openBtn.addEventListener('click', () => masterTl.play());
 
-            // --- Scroll Arrow Hide Logic ---
-            const surpriseScreen = document.getElementById('surprise-screen');
-            const scrollArrow = document.getElementById('scroll-arrow');
-            
-            surpriseScreen.addEventListener('scroll', () => {
-                // If they scroll down more than 50px, hide the arrow
-                if (surpriseScreen.scrollTop > 50 && scrollArrow.style.display !== 'none') {
-                    gsap.to(scrollArrow, { opacity: 0, duration: 0.5, onComplete: () => scrollArrow.style.display = 'none' });
-                }
-            });
 
-            // --- THE 3D CAKE & BLOW LOGIC ---
+            // --- PUZZLE 1: THE CAKE ---
             const micBtn = document.getElementById('mic-btn');
             const flame = document.getElementById('flame');
             const cakeWrapper = document.getElementById('cake-wrapper');
@@ -346,10 +289,10 @@
             const cakeInstruction = document.getElementById('cake-instruction');
             const hbdSong = document.getElementById('hbd-song');
             const giantHbd = document.getElementById('giant-hbd');
+            const btnNext1 = document.getElementById('btn-next-1');
             const cakeStage = document.getElementById('cake-stage');
             
             let cakeState = 0; 
-
             let audioContext, analyser, microphone, dataArray;
             
             micBtn.addEventListener('click', async () => {
@@ -365,7 +308,6 @@
                     
                     micBtn.style.display = 'none';
                     cakeInstruction.innerHTML = "Mic active! 🎙️<br><b>Blow hard into your phone!</b> 🌬️";
-                    
                     listenToBlow();
                 } catch (err) {
                     micBtn.innerText = "Mic denied. Just tap the flame!";
@@ -379,8 +321,7 @@
                 analyser.getByteFrequencyData(dataArray);
                 let sum = 0;
                 for(let i=0; i<dataArray.length; i++) sum += dataArray[i];
-                let average = sum / dataArray.length;
-                if (average > 60) triggerBlowOut();
+                if ((sum / dataArray.length) > 60) triggerBlowOut();
             }
 
             flame.addEventListener('click', () => { if(cakeState === 0) triggerBlowOut(); });
@@ -415,11 +356,8 @@
                     cakeState = 2;
                     gsap.to(knife, { y: 120, rotation: 160, opacity: 0, duration: 0.5 });
                     gsap.to(candle, { opacity: 0, duration: 0.2 });
-
-                    gsap.to(cakeLeft, { x: -50, y: 20, rotationZ: -10, opacity: 0, duration: 1, ease: "power2.inOut" });
-                    gsap.to(cakeRight, { x: 50, y: 20, rotationZ: 10, opacity: 0, duration: 1, ease: "power2.inOut", onComplete: () => {
-                        cakeWrapper.style.display = 'none';
-                    }});
+                    gsap.to(cakeLeft, { x: -50, y: 20, rotationZ: -10, opacity: 0, duration: 1 });
+                    gsap.to(cakeRight, { x: 50, y: 20, rotationZ: 10, opacity: 0, duration: 1, onComplete: () => { cakeWrapper.style.display = 'none'; }});
 
                     cakeSlice.style.pointerEvents = "all";
                     gsap.fromTo(cakeSlice, 
@@ -439,7 +377,7 @@
                     cakeState = 3;
                     cakeSlice.classList.add('bitten');
                     gsap.to(cakeSlice, { rotation: 10, yoyo: true, repeat: 3, duration: 0.1 });
-                    hbdSong.play().catch(e => console.log("Audio play blocked by browser"));
+                    hbdSong.play().catch(e => console.log("Audio blocked"));
 
                     const duration = 5000;
                     const end = Date.now() + duration;
@@ -449,31 +387,79 @@
                         if (Date.now() < end) requestAnimationFrame(frame);
                     }());
 
-                    // Giant Text pops up
                     gsap.to(giantHbd, { scale: 1, opacity: 1, duration: 1.5, ease: "elastic.out(1, 0.4)" });
                     gsap.to(cakeInstruction, { opacity: 0, duration: 0.5 });
 
-                    // --- NEW: Remove HBD text after 5 seconds and show scroll arrow ---
+                    // Hide Text and Show "Next" Button
                     setTimeout(() => {
                         gsap.to(giantHbd, { scale: 0, opacity: 0, duration: 1, ease: "power2.in" });
-                        scrollArrow.style.display = 'block';
-                        gsap.to(scrollArrow, { opacity: 1, duration: 1 });
+                        btnNext1.style.display = 'block';
+                        gsap.to(btnNext1, { opacity: 1, duration: 1 });
                     }, 5000);
                 }
             });
 
-            // --- 3D Cards ---
+            // Page 1 -> Page 2
+            btnNext1.addEventListener('click', () => goToNextPage('page-1', 'page-2'));
+
+
+            // --- PUZZLE 2: SWIPE TO FLY (Timeline -> Memories) ---
+            const swipeThumb = document.getElementById('swipe-thumb');
+            const swipeContainer = document.querySelector('.swipe-puzzle');
+            let isDragging = false;
+            let startX = 0;
+            let maxWalk = 0;
+
+            const handleDragStart = (e) => {
+                isDragging = true;
+                startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+                maxWalk = swipeContainer.offsetWidth - swipeThumb.offsetWidth - 20; // 20px padding compensation
+                swipeThumb.style.transition = 'none'; // remove transition for smooth dragging
+            };
+
+            const handleDragMove = (e) => {
+                if(!isDragging) return;
+                let currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+                let walk = currentX - startX;
+                
+                if(walk < 0) walk = 0;
+                if(walk > maxWalk) walk = maxWalk;
+                
+                swipeThumb.style.transform = `translateX(${walk}px)`;
+                
+                // If reached the end
+                if(walk >= maxWalk - 5) {
+                    isDragging = false;
+                    swipeThumb.style.pointerEvents = 'none'; // Lock it
+                    confetti({ particleCount: 50, spread: 60, origin: { y: 0.9 }, zIndex: 100 });
+                    
+                    // Transition to Page 3
+                    setTimeout(() => goToNextPage('page-2', 'page-3'), 500);
+                }
+            };
+
+            const handleDragEnd = () => {
+                if(!isDragging) return;
+                isDragging = false;
+                swipeThumb.style.transition = 'transform 0.3s ease'; // Add snap back transition
+                swipeThumb.style.transform = `translateX(0px)`; // Snap back to start
+            };
+
+            swipeThumb.addEventListener('mousedown', handleDragStart);
+            swipeThumb.addEventListener('touchstart', handleDragStart, {passive: true});
+            window.addEventListener('mousemove', handleDragMove);
+            window.addEventListener('touchmove', handleDragMove, {passive: true});
+            window.addEventListener('mouseup', handleDragEnd);
+            window.addEventListener('touchend', handleDragEnd);
+
+
+            // --- PUZZLE 3: HOLD TO UNLOCK (Memories -> Final Gift) ---
             document.querySelectorAll('.memory-card').forEach(card => {
                 card.addEventListener('click', () => card.classList.toggle('flipped'));
             });
 
-            // --- NEW: Secret Vault (Hold to Unlock) ---
             const holdBtn = document.getElementById('hold-btn');
             const progressRing = document.querySelector('.progress-ring');
-            const vaultLock = document.getElementById('vault-lock');
-            const secretMessage = document.getElementById('secret-message');
-            const secretHint = document.getElementById('secret-hint');
-            
             let holdTimer;
             let progressTween;
 
@@ -481,27 +467,24 @@
                 e.preventDefault(); 
                 gsap.to(holdBtn, { scale: 0.9, duration: 0.2 });
                 gsap.set(progressRing, { opacity: 1 });
-                // Spin the ring for 2 seconds
+                // Spin ring for 2 seconds
                 progressTween = gsap.to(progressRing, { rotation: 360, duration: 2, ease: "linear" });
 
                 holdTimer = setTimeout(() => {
-                    // Unlock logic!
-                    vaultLock.style.display = 'none';
-                    secretHint.style.display = 'none';
-                    secretMessage.style.display = 'block';
-                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.8 }, colors: ['#ff2a5f', '#fff'] });
+                    // Unlock logic! Transition to Page 4
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.8 }, colors: ['#ff2a5f', '#fff'], zIndex: 100 });
+                    goToNextPage('page-3', 'page-4');
                 }, 2000); 
             };
 
             const endHold = (e) => {
-                e.preventDefault();
+                if(e) e.preventDefault();
                 clearTimeout(holdTimer);
                 gsap.to(holdBtn, { scale: 1, duration: 0.2 });
                 if (progressTween) progressTween.kill();
                 gsap.to(progressRing, { opacity: 0, duration: 0.2, onComplete: () => gsap.set(progressRing, { rotation: 0 }) });
             };
 
-            // Support both mobile touch and desktop mouse
             holdBtn.addEventListener('mousedown', startHold);
             holdBtn.addEventListener('touchstart', startHold, {passive: false});
             holdBtn.addEventListener('mouseup', endHold);
@@ -509,7 +492,7 @@
             holdBtn.addEventListener('touchend', endHold);
 
 
-            // --- Final Gift ---
+            // --- PAGE 4: FINAL GIFT ---
             const finalGift = document.getElementById('final-gift');
             const giftCoupon = document.getElementById('gift-coupon');
             let giftOpened = false;
@@ -535,7 +518,7 @@
                     particle.style.left = Math.random() * 100 + 'vw';
                     particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
                     particle.style.fontSize = (Math.random() * 1 + 0.8) + 'rem';
-                    document.getElementById('surprise-screen').appendChild(particle);
+                    document.body.appendChild(particle);
                     setTimeout(() => particle.remove(), 8000); 
                 }, 400); 
             }
