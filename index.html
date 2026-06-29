@@ -27,14 +27,12 @@
             background: radial-gradient(circle at 50% 50%, #2b0814 0%, #0f0508 100%);
         }
 
-        /* --- Glassmorphism UI --- */
         .glass {
             background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border); border-radius: 20px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
 
-        /* --- Screens --- */
         .screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none;
             flex-direction: column; justify-content: center; align-items: center; opacity: 0; z-index: 10;
@@ -67,19 +65,17 @@
         
         .message-box { padding: 30px 20px; width: 100%; max-width: 360px; line-height: 1.7; font-size: 1.05rem; margin-bottom: 40px; }
 
-        /* --- 3D INTERACTIVE CAKE SECTION (FIXED FOR MOBILE) --- */
+        /* --- 3D INTERACTIVE CAKE SECTION --- */
         .interactive-cake-section {
             padding: 40px 20px; width: 100%; max-width: 360px; margin-bottom: 50px;
             text-align: center; position: relative; 
-            overflow: visible; /* Fixed hidden overflow glitch */
-            min-height: 400px; /* Forces box to stay open */
+            overflow: visible; min-height: 400px; 
             display: flex; flex-direction: column; align-items: center;
         }
         .interactive-cake-section h2 { 
             font-family: 'Dancing Script', cursive; font-size: 2.5rem; 
             color: var(--text-light); margin-bottom: 10px; text-shadow: 0 0 10px var(--accent-pink); 
         }
-        
         .mic-btn {
             background: linear-gradient(45deg, var(--accent-red), var(--accent-pink)); color: white;
             border: none; padding: 12px 20px; border-radius: 30px; font-weight: 600; font-family: 'Poppins';
@@ -87,7 +83,6 @@
             animation: pulse 2s infinite; -webkit-tap-highlight-color: transparent;
             z-index: 10; position: relative;
         }
-        
         .cake-instruction-text { 
             font-size: 1rem; color: var(--text-light); margin-bottom: 30px; 
             height: 50px; font-weight: 300; z-index: 10; position: relative; 
@@ -99,20 +94,13 @@
             justify-content: center; align-items: center;
             perspective: 1000px; z-index: 5;
         }
-
-        .cake-wrapper {
-            position: relative; width: 160px; height: 120px; 
-            transform-style: preserve-3d; transform: rotateX(15deg);
-        }
-
+        .cake-wrapper { position: relative; width: 160px; height: 120px; transform-style: preserve-3d; transform: rotateX(15deg); }
         .cake-half {
             position: absolute; width: 100%; height: 100%;
             background: linear-gradient(to bottom, #ffb3c1 0%, #ff758f 100%);
-            border-radius: 15px;
-            box-shadow: inset 0 10px 0 #fff0f3, 0 15px 20px rgba(0,0,0,0.6);
+            border-radius: 15px; box-shadow: inset 0 10px 0 #fff0f3, 0 15px 20px rgba(0,0,0,0.6);
             transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s;
         }
-        
         .cake-left { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); }
         .cake-right { clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); }
 
@@ -148,6 +136,14 @@
             text-align: center; width: 100%; line-height: 1.2;
         }
 
+        /* --- Scroll Arrow --- */
+        #scroll-arrow {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            font-family: 'Poppins', sans-serif; font-size: 1.5rem; color: #ffb3c1;
+            z-index: 90; display: none; opacity: 0; animation: bounce 1.5s infinite;
+            text-shadow: 0 0 10px var(--accent-pink); pointer-events: none;
+        }
+
         /* --- LDR Sections --- */
         .journey-container { width: 100%; max-width: 360px; margin-bottom: 50px; text-align: left; padding: 30px 20px; }
         .journey-container h2 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--accent-pink); text-align: center; margin-bottom: 25px; }
@@ -166,14 +162,31 @@
         .card-front img { width: 100%; height: 100%; object-fit: cover; }
         .card-back { background: var(--glass-bg); backdrop-filter: blur(15px); transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; padding: 20px; font-family: 'Dancing Script', cursive; font-size: 1.8rem; text-align: center; color: var(--accent-pink); }
 
+        /* --- NEW: Secret Vault (Hold to Unlock) --- */
         .secret-vault { padding: 30px 20px; width: 100%; max-width: 360px; margin-bottom: 50px; text-align: center; }
-        .secret-vault h2 { font-size: 1.4rem; margin-bottom: 10px; color: var(--accent-pink); }
-        .secret-input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--accent-pink); background: rgba(0,0,0,0.5); color: white; text-align: center; margin-bottom: 15px; font-size: 1.1rem; letter-spacing: 2px; outline: none; transition: box-shadow 0.3s; }
-        .secret-input:focus { box-shadow: 0 0 15px rgba(255, 42, 95, 0.5); }
-        .secret-btn { background: var(--accent-pink); color: white; border: none; padding: 12px 25px; border-radius: 12px; font-size: 1rem; cursor: pointer; font-weight: 600; width: 100%; transition: transform 0.2s; }
-        .secret-btn:active { transform: scale(0.95); }
+        .secret-vault h2 { font-size: 1.6rem; margin-bottom: 10px; color: var(--accent-pink); font-family: 'Dancing Script', cursive;}
+        
+        .hold-btn-container {
+            position: relative; width: 90px; height: 90px; margin: 20px auto;
+        }
+        #hold-btn {
+            width: 100%; height: 100%; border-radius: 50%; background: rgba(0,0,0,0.5); 
+            border: 2px solid var(--accent-pink); font-size: 2.5rem; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center;
+            -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; 
+            z-index: 2; position: relative; transition: transform 0.1s;
+            box-shadow: 0 0 15px rgba(255, 42, 95, 0.3); -webkit-tap-highlight-color: transparent;
+        }
+        .progress-ring {
+            position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border-radius: 50%; border: 4px solid transparent; border-top-color: var(--text-light);
+            border-right-color: var(--text-light); opacity: 0; transform: rotate(0deg); 
+            z-index: 1; pointer-events: none;
+        }
+
         #secret-message { display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border); font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: var(--text-light); }
 
+        /* --- Gift --- */
         .gift-container { margin-bottom: 100px; text-align: center; width: 100%; max-width: 360px; }
         .gift-box { font-size: 5rem; cursor: pointer; -webkit-tap-highlight-color: transparent; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)); transition: transform 0.2s; }
         .gift-box:active { transform: scale(0.9); }
@@ -185,6 +198,7 @@
         @keyframes fadeInOut { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 42, 95, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255, 42, 95, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 42, 95, 0); } }
         @keyframes flicker { 0% { opacity: 1; transform: translateX(-50%) scale(1); } 100% { opacity: 0.8; transform: translateX(-50%) scale(1.1) skewX(3deg); } }
+        @keyframes bounce { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 15px); } }
         .particle { position: fixed; pointer-events: none; animation: floatUp linear forwards; z-index: 1; }
         @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; } 100% { transform: translateY(-20vh) scale(1.2) rotate(360deg); opacity: 0; } }
         .wind-particle { position: absolute; background: white; border-radius: 50%; opacity: 0.5; filter: blur(2px); z-index: 20;}
@@ -196,6 +210,7 @@
     <audio id="hbd-song" src="happy-birthday.mp3" preload="auto"></audio>
 
     <div id="giant-hbd">Happy<br>Birthday! 🎉</div>
+    <div id="scroll-arrow">⬇️</div>
 
     <div id="intro-screen" class="screen">
         <div class="heart-button" id="open-btn">❤️</div>
@@ -262,11 +277,15 @@
         </div>
 
         <div class="secret-vault glass reveal-item">
-            <h2>🔒 Secret Memory Lock</h2>
-            <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 15px;">The day the world got a little brighter.<br>Format: DD/MM/YYYY</p>
-            <input type="text" id="secret-input" class="secret-input" placeholder="DD/MM/YYYY">
-            <button id="secret-submit" class="secret-btn">Unlock Memory</button>
-            <div id="secret-message">Every day since 15/07/2001 has been leading up to us. I love you! 💕</div>
+            <h2>🔒 Our Secret</h2>
+            <p id="secret-hint" style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 5px;">Press and hold the heart<br>to unlock a promise.</p>
+            
+            <div class="hold-btn-container" id="vault-lock">
+                <div class="progress-ring"></div>
+                <div id="hold-btn">💖</div>
+            </div>
+            
+            <div id="secret-message">Every day since 15/07/2001 has been leading up to us. I promise to always love you! 💕</div>
         </div>
 
         <div class="gift-container reveal-item">
@@ -304,6 +323,17 @@
 
             openBtn.addEventListener('click', () => masterTl.play());
 
+            // --- Scroll Arrow Hide Logic ---
+            const surpriseScreen = document.getElementById('surprise-screen');
+            const scrollArrow = document.getElementById('scroll-arrow');
+            
+            surpriseScreen.addEventListener('scroll', () => {
+                // If they scroll down more than 50px, hide the arrow
+                if (surpriseScreen.scrollTop > 50 && scrollArrow.style.display !== 'none') {
+                    gsap.to(scrollArrow, { opacity: 0, duration: 0.5, onComplete: () => scrollArrow.style.display = 'none' });
+                }
+            });
+
             // --- THE 3D CAKE & BLOW LOGIC ---
             const micBtn = document.getElementById('mic-btn');
             const flame = document.getElementById('flame');
@@ -318,9 +348,8 @@
             const giantHbd = document.getElementById('giant-hbd');
             const cakeStage = document.getElementById('cake-stage');
             
-            let cakeState = 0; // 0: lit, 1: blown, 2: ready to bite, 3: bitten
+            let cakeState = 0; 
 
-            // Microphone Audio Detection
             let audioContext, analyser, microphone, dataArray;
             
             micBtn.addEventListener('click', async () => {
@@ -345,20 +374,15 @@
             });
 
             function listenToBlow() {
-                if (cakeState !== 0) return; // Stop listening if already blown
+                if (cakeState !== 0) return; 
                 requestAnimationFrame(listenToBlow);
                 analyser.getByteFrequencyData(dataArray);
                 let sum = 0;
                 for(let i=0; i<dataArray.length; i++) sum += dataArray[i];
                 let average = sum / dataArray.length;
-                
-                // If loud noise (blowing) is detected
-                if (average > 60) {
-                    triggerBlowOut();
-                }
+                if (average > 60) triggerBlowOut();
             }
 
-            // Fallback: Tap to blow
             flame.addEventListener('click', () => { if(cakeState === 0) triggerBlowOut(); });
 
             function triggerBlowOut() {
@@ -366,7 +390,6 @@
                 cakeState = 1;
                 micBtn.style.display = 'none';
                 
-                // Wind particle effect
                 for(let i=0; i<10; i++) {
                     let wind = document.createElement('div');
                     wind.className = 'wind-particle';
@@ -380,41 +403,30 @@
 
                 flame.classList.add('out');
                 
-                // Text update & Knife Animation
                 gsap.to(cakeInstruction, {opacity: 0, duration: 0.3, onComplete: () => {
                     cakeInstruction.innerHTML = "Yay! 🥳<br>Tap the cake to cut it!";
                     gsap.to(cakeInstruction, {opacity: 1, duration: 0.3});
-                    
-                    // Drop the knife down
                     gsap.to(knife, { y: 60, opacity: 1, duration: 0.8, ease: "bounce.out" });
                 }});
             }
 
-            // Slice the cake
             cakeWrapper.addEventListener('click', () => {
                 if(cakeState === 1) {
                     cakeState = 2;
-                    
-                    // 1. Knife slices down and disappears
                     gsap.to(knife, { y: 120, rotation: 160, opacity: 0, duration: 0.5 });
-                    
-                    // 2. Hide the candle
                     gsap.to(candle, { opacity: 0, duration: 0.2 });
 
-                    // 3. Split the cake in half (3D translation)
                     gsap.to(cakeLeft, { x: -50, y: 20, rotationZ: -10, opacity: 0, duration: 1, ease: "power2.inOut" });
                     gsap.to(cakeRight, { x: 50, y: 20, rotationZ: 10, opacity: 0, duration: 1, ease: "power2.inOut", onComplete: () => {
                         cakeWrapper.style.display = 'none';
                     }});
 
-                    // 4. The Slice Zooms OUT into the screen
                     cakeSlice.style.pointerEvents = "all";
                     gsap.fromTo(cakeSlice, 
                         { scale: 0, y: 50, rotation: -20, opacity: 0 }, 
                         { scale: 1.5, y: -20, rotation: 0, opacity: 1, duration: 1, ease: "elastic.out(1, 0.7)", delay: 0.5 }
                     );
 
-                    // Update Text
                     gsap.to(cakeInstruction, {opacity: 0, duration: 0.3, delay: 0.8, onComplete: () => {
                         cakeInstruction.innerHTML = "Say Aaah! 🥺<br><b>Tap the slice to take a huge bite!</b>";
                         gsap.to(cakeInstruction, {opacity: 1, duration: 0.3});
@@ -422,21 +434,13 @@
                 }
             });
 
-            // Take a bite!
             cakeSlice.addEventListener('click', () => {
                 if(cakeState === 2) {
                     cakeState = 3;
-                    
-                    // 1. Add bite mark via CSS clip-path class
                     cakeSlice.classList.add('bitten');
-                    
-                    // 2. Wiggle the slice
                     gsap.to(cakeSlice, { rotation: 10, yoyo: true, repeat: 3, duration: 0.1 });
-                    
-                    // 3. Play Song
                     hbdSong.play().catch(e => console.log("Audio play blocked by browser"));
 
-                    // 4. Epic Confetti
                     const duration = 5000;
                     const end = Date.now() + duration;
                     (function frame() {
@@ -445,38 +449,67 @@
                         if (Date.now() < end) requestAnimationFrame(frame);
                     }());
 
-                    // 5. Giant Happy Birthday Text Popup
+                    // Giant Text pops up
                     gsap.to(giantHbd, { scale: 1, opacity: 1, duration: 1.5, ease: "elastic.out(1, 0.4)" });
-                    
-                    // Hide instructions
                     gsap.to(cakeInstruction, { opacity: 0, duration: 0.5 });
+
+                    // --- NEW: Remove HBD text after 5 seconds and show scroll arrow ---
+                    setTimeout(() => {
+                        gsap.to(giantHbd, { scale: 0, opacity: 0, duration: 1, ease: "power2.in" });
+                        scrollArrow.style.display = 'block';
+                        gsap.to(scrollArrow, { opacity: 1, duration: 1 });
+                    }, 5000);
                 }
             });
 
-            // --- Other Interactions (Cards, Vault, Gift) ---
+            // --- 3D Cards ---
             document.querySelectorAll('.memory-card').forEach(card => {
                 card.addEventListener('click', () => card.classList.toggle('flipped'));
             });
 
-            const secretSubmit = document.getElementById('secret-submit');
-            const secretInput = document.getElementById('secret-input');
+            // --- NEW: Secret Vault (Hold to Unlock) ---
+            const holdBtn = document.getElementById('hold-btn');
+            const progressRing = document.querySelector('.progress-ring');
+            const vaultLock = document.getElementById('vault-lock');
             const secretMessage = document.getElementById('secret-message');
-            const correctAnswer = "15/07/2001"; 
+            const secretHint = document.getElementById('secret-hint');
+            
+            let holdTimer;
+            let progressTween;
 
-            secretSubmit.addEventListener('click', () => {
-                const userAnswer = secretInput.value.trim();
-                if(userAnswer === correctAnswer) {
-                    secretInput.classList.add('hidden');
-                    secretSubmit.classList.add('hidden');
+            const startHold = (e) => {
+                e.preventDefault(); 
+                gsap.to(holdBtn, { scale: 0.9, duration: 0.2 });
+                gsap.set(progressRing, { opacity: 1 });
+                // Spin the ring for 2 seconds
+                progressTween = gsap.to(progressRing, { rotation: 360, duration: 2, ease: "linear" });
+
+                holdTimer = setTimeout(() => {
+                    // Unlock logic!
+                    vaultLock.style.display = 'none';
+                    secretHint.style.display = 'none';
                     secretMessage.style.display = 'block';
                     confetti({ particleCount: 100, spread: 70, origin: { y: 0.8 }, colors: ['#ff2a5f', '#fff'] });
-                } else {
-                    gsap.fromTo(secretInput, { x: -10 }, { x: 10, duration: 0.1, yoyo: true, repeat: 3 });
-                    secretInput.value = "";
-                    secretInput.placeholder = "Try DD/MM/YYYY! 😉";
-                }
-            });
+                }, 2000); 
+            };
 
+            const endHold = (e) => {
+                e.preventDefault();
+                clearTimeout(holdTimer);
+                gsap.to(holdBtn, { scale: 1, duration: 0.2 });
+                if (progressTween) progressTween.kill();
+                gsap.to(progressRing, { opacity: 0, duration: 0.2, onComplete: () => gsap.set(progressRing, { rotation: 0 }) });
+            };
+
+            // Support both mobile touch and desktop mouse
+            holdBtn.addEventListener('mousedown', startHold);
+            holdBtn.addEventListener('touchstart', startHold, {passive: false});
+            holdBtn.addEventListener('mouseup', endHold);
+            holdBtn.addEventListener('mouseleave', endHold);
+            holdBtn.addEventListener('touchend', endHold);
+
+
+            // --- Final Gift ---
             const finalGift = document.getElementById('final-gift');
             const giftCoupon = document.getElementById('gift-coupon');
             let giftOpened = false;
@@ -492,7 +525,7 @@
                 }});
             });
 
-            // --- Ambient Background Particles ---
+            // --- Ambient Particles ---
             function startHeartRain() {
                 const hearts = ['❤️', '💖', '✨', '✈️'];
                 setInterval(() => {
