@@ -67,26 +67,37 @@
         
         .message-box { padding: 30px 20px; width: 100%; max-width: 360px; line-height: 1.7; font-size: 1.05rem; margin-bottom: 40px; }
 
-        /* --- 3D INTERACTIVE CAKE SECTION --- */
+        /* --- 3D INTERACTIVE CAKE SECTION (FIXED FOR MOBILE) --- */
         .interactive-cake-section {
             padding: 40px 20px; width: 100%; max-width: 360px; margin-bottom: 50px;
-            text-align: center; position: relative; overflow: hidden;
+            text-align: center; position: relative; 
+            overflow: visible; /* Fixed hidden overflow glitch */
+            min-height: 400px; /* Forces box to stay open */
+            display: flex; flex-direction: column; align-items: center;
         }
-        .interactive-cake-section h2 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--text-light); margin-bottom: 10px; text-shadow: 0 0 10px var(--accent-pink); }
+        .interactive-cake-section h2 { 
+            font-family: 'Dancing Script', cursive; font-size: 2.5rem; 
+            color: var(--text-light); margin-bottom: 10px; text-shadow: 0 0 10px var(--accent-pink); 
+        }
         
         .mic-btn {
             background: linear-gradient(45deg, var(--accent-red), var(--accent-pink)); color: white;
-            border: none; padding: 10px 20px; border-radius: 30px; font-weight: 600; font-family: 'Poppins';
+            border: none; padding: 12px 20px; border-radius: 30px; font-weight: 600; font-family: 'Poppins';
             margin-bottom: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 42, 95, 0.4);
             animation: pulse 2s infinite; -webkit-tap-highlight-color: transparent;
+            z-index: 10; position: relative;
         }
         
-        .cake-instruction-text { font-size: 1rem; color: var(--text-light); margin-bottom: 30px; height: 50px; font-weight: 300; }
+        .cake-instruction-text { 
+            font-size: 1rem; color: var(--text-light); margin-bottom: 30px; 
+            height: 50px; font-weight: 300; z-index: 10; position: relative; 
+        }
 
         /* 3D Cake Scene */
         .cake-stage {
-            position: relative; height: 200px; width: 100%; display: flex; justify-content: center; align-items: center;
-            perspective: 1000px; /* Gives the 3D depth */
+            position: relative; height: 200px; width: 100%; display: flex; 
+            justify-content: center; align-items: center;
+            perspective: 1000px; z-index: 5;
         }
 
         .cake-wrapper {
@@ -102,7 +113,6 @@
             transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s;
         }
         
-        /* Simulating the left and right sides of the cake for cutting */
         .cake-left { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); }
         .cake-right { clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); }
 
@@ -124,13 +134,11 @@
             opacity: 0; pointer-events: none; z-index: 10; filter: drop-shadow(0 10px 5px rgba(0,0,0,0.5));
         }
 
-        /* The 3D Slice that zooms into the screen */
         .cake-slice-3d {
             position: absolute; font-size: 6rem; opacity: 0; pointer-events: none;
             transform: scale(0.1) translateZ(-500px); filter: drop-shadow(0 20px 20px rgba(0,0,0,0.8));
             transition: clip-path 0.3s; cursor: pointer; -webkit-tap-highlight-color: transparent; z-index: 20;
         }
-        /* Bite mark effect */
         .bitten { clip-path: polygon(0 0, 100% 0, 100% 50%, 80% 60%, 100% 80%, 100% 100%, 0 100%); }
 
         #giant-hbd {
@@ -140,7 +148,7 @@
             text-align: center; width: 100%; line-height: 1.2;
         }
 
-        /* --- Existing LDR Sections (Glassmorphism updated) --- */
+        /* --- LDR Sections --- */
         .journey-container { width: 100%; max-width: 360px; margin-bottom: 50px; text-align: left; padding: 30px 20px; }
         .journey-container h2 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--accent-pink); text-align: center; margin-bottom: 25px; }
         .timeline { position: relative; padding-left: 20px; border-left: 2px solid var(--accent-pink); }
