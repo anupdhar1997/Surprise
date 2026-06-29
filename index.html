@@ -30,14 +30,14 @@
             width: 100vw;
         }
 
-        /* Screen Management - Controlled by GSAP */
+        /* Screen Management */
         .screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            display: none; /* Hidden by default */
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -45,7 +45,6 @@
             z-index: 10;
         }
 
-        /* Set the first screen to be visible immediately */
         #intro-screen {
             display: flex;
             opacity: 1;
@@ -71,7 +70,7 @@
             animation: fadeInOut 2s infinite;
         }
 
-        /* --- Anticipation Screen Styles --- */
+        /* --- Anticipation Screen --- */
         #anticipation-screen {
             background: #0a0104;
             z-index: 20;
@@ -88,12 +87,19 @@
             text-shadow: 0 0 15px rgba(255, 77, 109, 0.5);
         }
 
-        /* --- Surprise Screen Styles --- */
+        /* --- Surprise Screen (Now Scrollable) --- */
         #surprise-screen {
             background: linear-gradient(135deg, #350117 0%, #140005 100%);
-            padding: 20px;
+            padding: 50px 20px;
             text-align: center;
             z-index: 10;
+            justify-content: flex-start; /* Allows scrolling from the top */
+            overflow-y: auto; /* Enables vertical scrolling */
+        }
+
+        /* Hide scrollbar for a cleaner app-like look */
+        #surprise-screen::-webkit-scrollbar {
+            display: none;
         }
 
         h1 {
@@ -117,41 +123,85 @@
             font-size: 1.1rem;
             z-index: 2;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
         }
 
-        .photo-frame {
-            margin-top: 25px;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid var(--accent-pink);
-            overflow: hidden;
+        .scroll-hint {
+            font-size: 0.9rem;
+            color: var(--accent-pink);
+            margin-bottom: 20px;
+            opacity: 0.8;
+            letter-spacing: 1px;
+            animation: fadeInOut 2s infinite;
+        }
+
+        /* --- 3D Interactive Memory Cards --- */
+        .memories-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+            max-width: 350px;
+            padding-bottom: 50px;
             z-index: 2;
-            box-shadow: 0 0 25px rgba(255, 77, 109, 0.5);
         }
 
-        .photo-frame img {
+        .memory-card {
+            perspective: 1000px;
+            width: 100%;
+            height: 250px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+
+        /* The class that triggers the flip */
+        .memory-card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Hides the back when flipped */
+            backface-visibility: hidden;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 77, 109, 0.4);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+
+        .card-front img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        /* --- CSS Animations --- */
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.15); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.15); }
-            70% { transform: scale(1); }
+        .card-back {
+            background: linear-gradient(135deg, var(--accent-red), var(--primary-bg));
+            transform: rotateY(180deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: var(--text-light);
+            border: 2px solid var(--accent-pink);
         }
 
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
+        /* --- Particles --- */
         .particle {
-            position: absolute;
+            position: fixed; /* Keep hearts floating over the whole screen even when scrolling */
             font-size: 1.5rem;
             color: var(--accent-pink);
             user-select: none;
@@ -161,14 +211,21 @@
         }
 
         @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) scale(0.5) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-20vh) scale(1.2) rotate(360deg);
-                opacity: 0;
-            }
+            0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.15); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.15); }
+            70% { transform: scale(1); }
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
         }
     </style>
 </head>
@@ -196,8 +253,43 @@
             Wishing you the most beautiful birthday. Every moment with you is a gift. I hope this year brings you as much joy as you bring to my life! 💖
         </div>
 
-        <div class="photo-frame">
-            <img src="https://via.placeholder.com/300x300/ff4d6d/ffffff?text=Her+Photo" alt="Her Photo">
+        <div class="scroll-hint">▼ Tap the cards for a surprise ▼</div>
+
+        <div class="memories-container">
+            
+            <div class="memory-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="https://via.placeholder.com/400x300/ff4d6d/ffffff?text=Photo+1" alt="Memory 1">
+                    </div>
+                    <div class="card-back">
+                        I love your smile! ✨
+                    </div>
+                </div>
+            </div>
+
+            <div class="memory-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="https://via.placeholder.com/400x300/c9184a/ffffff?text=Photo+2" alt="Memory 2">
+                    </div>
+                    <div class="card-back">
+                        My favorite adventure partner 🌍
+                    </div>
+                </div>
+            </div>
+
+            <div class="memory-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="https://via.placeholder.com/400x300/ffb3c1/1a050a?text=Photo+3" alt="Memory 3">
+                    </div>
+                    <div class="card-back">
+                        Forever & Always ❤️
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -205,22 +297,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             const openBtn = document.getElementById('open-btn');
             const bgMusic = document.getElementById('bg-music');
-
-            // Set up the Master Timeline
             const masterTl = gsap.timeline({ paused: true });
 
-            // 1. Fade out the Intro Screen
+            // 1. Intro Screen Fade
             masterTl.to("#intro-screen", {
                 opacity: 0,
                 duration: 0.5,
                 onComplete: () => document.getElementById('intro-screen').style.display = 'none'
             });
 
-            // 2. Prepare and reveal the Anticipation Screen
+            // 2. Anticipation Screen Sequence
             masterTl.set("#anticipation-screen", { display: 'flex', opacity: 1 });
-
-            // 3. Animate each line of anticipation text sequentially
             const phrases = gsap.utils.toArray('.anticipation-text');
+            
             phrases.forEach((phrase) => {
                 masterTl.fromTo(phrase, 
                     { scale: 0.8, opacity: 0 }, 
@@ -228,61 +317,56 @@
                 )
                 .to(phrase, { 
                     scale: 1.2, opacity: 0, duration: 1, ease: "power2.in" 
-                }, "+=0.2"); // The text stays fully visible for 0.2s before fading out
+                }, "+=0.2"); 
             });
 
-            // 4. Hide Anticipation Screen and Prepare Final Screen
+            // 3. Prepare Final Screen
             masterTl.set("#anticipation-screen", { display: 'none' })
                     .set("#surprise-screen", { display: 'flex', opacity: 1 });
 
-            // 5. The Final Reveal Animations
-            masterTl.from("#surprise-screen h1", { 
-                y: -50, 
-                opacity: 0, 
-                duration: 1, 
-                ease: "back.out(1.7)" 
-            })
-            .from(".message-box", { 
-                y: 30, 
-                opacity: 0, 
-                duration: 1, 
-                ease: "power2.out" 
-            }, "-=0.6")
-            .from(".photo-frame", { 
-                scale: 0, 
-                rotation: -25, 
-                opacity: 0, 
-                duration: 1.2, 
-                ease: "elastic.out(1, 0.5)",
-                onComplete: startHeartRain // Trigger the background particles when the photo lands
-            }, "-=0.7");
+            // 4. Reveal Animations
+            masterTl.from("#surprise-screen h1", { y: -50, opacity: 0, duration: 1, ease: "back.out(1.7)" })
+                    .from(".message-box", { y: 30, opacity: 0, duration: 1, ease: "power2.out" }, "-=0.6")
+                    .from(".scroll-hint", { opacity: 0, duration: 1 }, "-=0.5")
+                    // Stagger the cards so they pop in one after another
+                    .from(".memory-card", { 
+                        y: 50, 
+                        scale: 0.8,
+                        opacity: 0, 
+                        duration: 0.8, 
+                        stagger: 0.2, // 0.2 second delay between each card animating
+                        ease: "back.out(1.5)",
+                        onComplete: startHeartRain
+                    }, "-=0.5");
 
-            // --- Click Event to Start Everything ---
+            // --- Start Experience on Click ---
             openBtn.addEventListener('click', () => {
-                // Uncomment to play music
                 // bgMusic.play().catch(e => console.log("Audio play prevented"));
-                
                 masterTl.play();
             });
 
-            // --- Particle System ---
+            // --- Setup Card Flipping Logic ---
+            const cards = document.querySelectorAll('.memory-card');
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    // Toggles the 'flipped' class on and off when tapped
+                    card.classList.toggle('flipped');
+                });
+            });
+
+            // --- Particles Background ---
             function startHeartRain() {
                 const hearts = ['❤️', '💖', '💕', '✨', '🌸'];
-                
                 setInterval(() => {
                     const particle = document.createElement('div');
                     particle.classList.add('particle');
-                    
                     particle.innerText = hearts[Math.floor(Math.random() * hearts.length)];
                     particle.style.left = Math.random() * 100 + 'vw';
                     particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
                     particle.style.fontSize = (Math.random() * 1.5 + 0.8) + 'rem';
                     
                     document.getElementById('surprise-screen').appendChild(particle);
-
-                    setTimeout(() => {
-                        particle.remove();
-                    }, 6000); 
+                    setTimeout(() => particle.remove(), 6000); 
                 }, 300); 
             }
         });
