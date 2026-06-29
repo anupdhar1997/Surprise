@@ -6,7 +6,6 @@
     <title>Happy Birthday! ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
-    <!-- GSAP & Canvas Confetti -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -89,29 +88,41 @@
         .timeline-content h3 { font-size: 1.1rem; color: var(--text-light); margin-bottom: 5px; font-weight: 600;}
         .timeline-content p { font-size: 0.9rem; color: rgba(255, 255, 255, 0.7); line-height: 1.5; }
 
-        /* NEW: Swipe to Fly Puzzle */
+        /* Swipe to Fly Puzzle */
         .swipe-puzzle { width: 100%; max-width: 360px; background: rgba(0,0,0,0.4); border-radius: 40px; border: 1px solid var(--glass-border); padding: 10px; position: relative; text-align: center; overflow: hidden; }
         .swipe-text { position: absolute; width: 100%; line-height: 50px; left: 0; top: 10px; color: rgba(255,255,255,0.4); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; pointer-events: none; z-index: 1; }
         .swipe-thumb { width: 50px; height: 50px; background: var(--accent-pink); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; position: relative; z-index: 2; cursor: pointer; box-shadow: 0 0 15px var(--accent-pink); touch-action: none; }
 
-        /* --- PAGE 3: Memories & Hold Puzzle --- */
-        .memories-container { display: flex; flex-direction: column; gap: 25px; width: 100%; max-width: 360px; margin-bottom: 30px; }
-        .memory-card { perspective: 1000px; width: 100%; height: 220px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        /* --- PAGE 3: Memories (UPDATED: 2x2 Grid) --- */
+        .memories-container { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            width: 100%; 
+            max-width: 360px; 
+            margin-bottom: 30px; 
+        }
+        .memory-card { perspective: 1000px; width: 100%; height: 160px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
         .memory-card.flipped .card-inner { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); overflow: hidden; }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 15px; border: 1px solid var(--glass-border); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); overflow: hidden; }
         .card-front img { width: 100%; height: 100%; object-fit: cover; }
-        .card-back { background: var(--glass-bg); backdrop-filter: blur(15px); transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; padding: 20px; font-family: 'Dancing Script', cursive; font-size: 1.8rem; text-align: center; color: var(--accent-pink); }
+        .card-back { 
+            background: var(--glass-bg); backdrop-filter: blur(15px); transform: rotateY(180deg); 
+            display: flex; align-items: center; justify-content: center; padding: 10px; 
+            font-family: 'Dancing Script', cursive; font-size: 1.3rem; text-align: center; color: var(--accent-pink); 
+        }
 
         .secret-vault { padding: 30px 20px; width: 100%; max-width: 360px; text-align: center; }
         .hold-btn-container { position: relative; width: 80px; height: 80px; margin: 15px auto; }
         #hold-btn { width: 100%; height: 100%; border-radius: 50%; background: rgba(0,0,0,0.5); border: 2px solid var(--accent-pink); font-size: 2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; z-index: 2; position: relative; transition: transform 0.1s; box-shadow: 0 0 15px rgba(255, 42, 95, 0.3); -webkit-tap-highlight-color: transparent; }
         .progress-ring { position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px; border-radius: 50%; border: 4px solid transparent; border-top-color: var(--text-light); border-right-color: var(--text-light); opacity: 0; transform: rotate(0deg); z-index: 1; pointer-events: none; }
 
-        /* --- PAGE 4: Final Gift --- */
+        /* --- PAGE 4: Final Gift (UPDATED) --- */
         .gift-container { text-align: center; width: 100%; max-width: 360px; margin-top: 50px; }
         .gift-box { font-size: 6rem; cursor: pointer; -webkit-tap-highlight-color: transparent; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)); transition: transform 0.2s; animation: floatUp 3s infinite alternate ease-in-out; }
         .gift-box:active { transform: scale(0.9); }
+        
         .coupon { display: none; background: rgba(255,255,255,0.95); color: #0f0508; padding: 30px 20px; border-radius: 15px; margin-top: 20px; border: 3px dashed var(--accent-red); transform: scale(0); box-shadow: 0 20px 30px rgba(0,0,0,0.6); position: relative; }
         .coupon h3 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--accent-red); margin-bottom: 15px;}
 
@@ -130,20 +141,17 @@
     <audio id="hbd-song" src="happy-birthday.mp3" preload="auto"></audio>
     <div id="giant-hbd">Happy<br>Birthday! 🎉</div>
 
-    <!-- Intro Trigger -->
     <div id="intro-screen" class="screen">
         <div class="heart-button" id="open-btn">❤️</div>
         <div class="instruction">Tap to Open</div>
     </div>
 
-    <!-- Anticipation -->
     <div id="anticipation-screen" class="screen">
         <div class="anticipation-text">Miles apart...</div>
         <div class="anticipation-text">But right here in my heart...</div>
         <div class="anticipation-text">Today is all about you.</div>
     </div>
 
-    <!-- ================= PAGE 1 ================= -->
     <div id="page-1" class="screen">
         <h1>Happy Birthday!</h1>
         <div class="message-box glass">
@@ -166,12 +174,10 @@
                 <div class="cake-slice-3d" id="cake-slice">🍰</div>
             </div>
             
-            <!-- Puzzle 1 Reward: Hidden Next Button -->
             <button class="next-btn" id="btn-next-1">Next Chapter ➔</button>
         </div>
     </div>
 
-    <!-- ================= PAGE 2 ================= -->
     <div id="page-2" class="screen">
         <h1 style="font-size: 2.8rem;">Our Journey</h1>
         <div class="ldr-subtitle">Distance means so little when someone means so much.</div>
@@ -190,31 +196,39 @@
             </div>
         </div>
 
-        <!-- Puzzle 2: Swipe to Fly -->
         <div class="swipe-puzzle">
             <div class="swipe-text">Swipe to Fly ➔</div>
             <div class="swipe-thumb" id="swipe-thumb">✈️</div>
         </div>
     </div>
 
-    <!-- ================= PAGE 3 ================= -->
     <div id="page-3" class="screen">
         <h1 style="font-size: 2.8rem;">Favorite Memories</h1>
         
         <div class="memories-container">
             <div class="memory-card"><div class="card-inner">
-                <div class="card-front"><img src="https://via.placeholder.com/400x300/ff2a5f/ffffff?text=Screenshot+of+us" alt="Call Memory"></div>
+                <div class="card-front"><img src="https://via.placeholder.com/400x400/ff2a5f/ffffff?text=Photo+1" alt="Memory"></div>
                 <div class="card-back">My favorite face on FaceTime ✨</div>
             </div></div>
+            
             <div class="memory-card"><div class="card-inner">
-                <div class="card-front"><img src="https://via.placeholder.com/400x300/c9184a/ffffff?text=Another+Photo" alt="Memory"></div>
-                <div class="card-back">Worth every mile between us 🌍</div>
+                <div class="card-front"><img src="https://via.placeholder.com/400x400/c9184a/ffffff?text=Photo+2" alt="Memory"></div>
+                <div class="card-back">Worth every mile 🌍</div>
+            </div></div>
+
+            <div class="memory-card"><div class="card-inner">
+                <div class="card-front"><img src="https://via.placeholder.com/400x400/ff758f/ffffff?text=Photo+3" alt="Memory"></div>
+                <div class="card-back">Counting down the days... ⏳</div>
+            </div></div>
+
+            <div class="memory-card"><div class="card-inner">
+                <div class="card-front"><img src="https://via.placeholder.com/400x400/800f2f/ffffff?text=Photo+4" alt="Memory"></div>
+                <div class="card-back">My favorite notification 📱</div>
             </div></div>
         </div>
 
-        <!-- Puzzle 3: Hold to Unlock -->
         <div class="secret-vault glass">
-            <h2>🔒 Unlock the Final Surprise</h2>
+            <h2>🔒 Unlock the Surprise</h2>
             <p id="secret-hint" style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 5px;">Press and hold the heart<br>for 2 seconds.</p>
             
             <div class="hold-btn-container">
@@ -224,17 +238,16 @@
         </div>
     </div>
 
-    <!-- ================= PAGE 4 ================= -->
     <div id="page-4" class="screen">
         <div class="gift-container">
             <h1 style="font-size: 3.5rem;">For You</h1>
             <p style="font-size: 1rem; opacity: 0.8; margin-bottom: 30px;">Tap the box</p>
-            <div class="gift-box" id="final-gift">💝</div>
+            <div class="gift-box" id="final-gift">📦</div>
             
             <div class="coupon" id="gift-coupon">
-                <h3>Virtual Movie Date 🍿</h3>
-                <p><strong>Good for ONE cozy video-call movie night!</strong><br><br>Plus, I'm ordering your favorite food directly to your door. Dinner is on me tonight! 🥂</p>
-                <p style="margin-top: 20px; font-family: 'Dancing Script', cursive; font-size: 1.5rem; color: var(--accent-pink);">I love you!</p>
+                <h3>Special Delivery!</h3>
+                <p><strong>A secret Care Package is already in the mail! 💌</strong><br><br>Keep an eye on your doorstep this week. Inside is one of my hoodies, your absolute favorite snacks, and a handwritten letter just for you. 🥰</p>
+                <p style="margin-top: 20px; font-family: 'Dancing Script', cursive; font-size: 1.5rem; color: var(--accent-pink);">I can't wait for you to open it!</p>
             </div>
         </div>
     </div>
@@ -243,7 +256,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             
             // --- Navigation Helper Function ---
-            // Slides the current screen out to the left, and brings the next one in from the right
             function goToNextPage(currentId, nextId) {
                 const currentScreen = document.getElementById(currentId);
                 const nextScreen = document.getElementById(nextId);
@@ -271,7 +283,6 @@
             masterTl.set("#anticipation-screen", { display: 'none' })
                     .set("#page-1", { display: 'flex', opacity: 1 });
 
-            // Animate Page 1 entrance
             masterTl.from("#page-1 > *", { y: 30, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power2.out", onComplete: startHeartRain });
 
             openBtn.addEventListener('click', () => masterTl.play());
@@ -413,8 +424,8 @@
             const handleDragStart = (e) => {
                 isDragging = true;
                 startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
-                maxWalk = swipeContainer.offsetWidth - swipeThumb.offsetWidth - 20; // 20px padding compensation
-                swipeThumb.style.transition = 'none'; // remove transition for smooth dragging
+                maxWalk = swipeContainer.offsetWidth - swipeThumb.offsetWidth - 20; 
+                swipeThumb.style.transition = 'none'; 
             };
 
             const handleDragMove = (e) => {
@@ -430,7 +441,7 @@
                 // If reached the end
                 if(walk >= maxWalk - 5) {
                     isDragging = false;
-                    swipeThumb.style.pointerEvents = 'none'; // Lock it
+                    swipeThumb.style.pointerEvents = 'none'; 
                     confetti({ particleCount: 50, spread: 60, origin: { y: 0.9 }, zIndex: 100 });
                     
                     // Transition to Page 3
@@ -441,8 +452,8 @@
             const handleDragEnd = () => {
                 if(!isDragging) return;
                 isDragging = false;
-                swipeThumb.style.transition = 'transform 0.3s ease'; // Add snap back transition
-                swipeThumb.style.transform = `translateX(0px)`; // Snap back to start
+                swipeThumb.style.transition = 'transform 0.3s ease'; 
+                swipeThumb.style.transform = `translateX(0px)`; 
             };
 
             swipeThumb.addEventListener('mousedown', handleDragStart);
@@ -467,11 +478,9 @@
                 e.preventDefault(); 
                 gsap.to(holdBtn, { scale: 0.9, duration: 0.2 });
                 gsap.set(progressRing, { opacity: 1 });
-                // Spin ring for 2 seconds
                 progressTween = gsap.to(progressRing, { rotation: 360, duration: 2, ease: "linear" });
 
                 holdTimer = setTimeout(() => {
-                    // Unlock logic! Transition to Page 4
                     confetti({ particleCount: 100, spread: 70, origin: { y: 0.8 }, colors: ['#ff2a5f', '#fff'], zIndex: 100 });
                     goToNextPage('page-3', 'page-4');
                 }, 2000); 
