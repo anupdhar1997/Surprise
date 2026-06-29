@@ -6,157 +6,188 @@
     <title>Happy Birthday! ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
-    <!-- GSAP & Canvas Confetti -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
         :root {
-            --primary-bg: #1a050a;
+            --primary-bg: #0f0508;
             --text-light: #fff0f3;
-            --accent-pink: #ff4d6d;
+            --accent-pink: #ff2a5f;
             --accent-red: #c9184a;
-            --timeline-line: rgba(255, 77, 109, 0.3);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 77, 109, 0.2);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--primary-bg);
-            color: var(--text-light);
-            font-family: 'Poppins', sans-serif;
-            overflow: hidden; height: 100vh; width: 100vw;
+            background-color: var(--primary-bg); color: var(--text-light);
+            font-family: 'Poppins', sans-serif; overflow: hidden; height: 100vh; width: 100vw;
+            background: radial-gradient(circle at 50% 50%, #2b0814 0%, #0f0508 100%);
+        }
+
+        /* --- Glassmorphism UI --- */
+        .glass {
+            background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border); border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
 
         /* --- Screens --- */
         .screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: none; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; z-index: 10;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none;
+            flex-direction: column; justify-content: center; align-items: center; opacity: 0; z-index: 10;
         }
 
-        #intro-screen { display: flex; opacity: 1; background: linear-gradient(135deg, #2b0814 0%, #1a050a 100%); z-index: 30; }
-        #anticipation-screen { background: #0a0104; z-index: 20; }
+        #intro-screen { display: flex; opacity: 1; z-index: 30; }
+        #anticipation-screen { background: #050102; z-index: 20; }
         #surprise-screen {
-            background: linear-gradient(135deg, #350117 0%, #140005 100%);
             padding: 50px 20px; text-align: center; z-index: 10;
             justify-content: flex-start; overflow-y: auto; overflow-x: hidden;
+            scroll-behavior: smooth;
         }
         #surprise-screen::-webkit-scrollbar { display: none; }
 
-        /* --- Typography --- */
+        /* --- Intro & Typography --- */
         .heart-button {
             font-size: 5rem; cursor: pointer; animation: heartbeat 1.5s infinite;
-            filter: drop-shadow(0 0 20px rgba(255, 77, 109, 0.6)); -webkit-tap-highlight-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(255, 42, 95, 0.8)); -webkit-tap-highlight-color: transparent;
         }
         .instruction {
-            margin-top: 20px; font-size: 1.2rem; letter-spacing: 2px; color: var(--accent-pink);
-            text-transform: uppercase; animation: fadeInOut 2s infinite;
+            margin-top: 20px; font-size: 1rem; letter-spacing: 3px; color: var(--accent-pink);
+            text-transform: uppercase; animation: fadeInOut 2s infinite; font-weight: 600;
         }
         .anticipation-text {
-            position: absolute; font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--accent-pink); 
-            opacity: 0; text-align: center; width: 90%; text-shadow: 0 0 15px rgba(255, 77, 109, 0.5);
+            position: absolute; font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--text-light); 
+            opacity: 0; text-align: center; width: 90%; text-shadow: 0 0 20px var(--accent-pink);
         }
-        h1 { font-family: 'Dancing Script', cursive; font-size: 3.5rem; color: var(--accent-pink); margin-bottom: 5px; text-shadow: 2px 2px 10px rgba(255, 77, 109, 0.4); }
-        .ldr-subtitle { font-size: 0.9rem; color: var(--text-light); opacity: 0.8; margin-bottom: 25px; font-style: italic; }
+        h1 { font-family: 'Dancing Script', cursive; font-size: 4rem; color: var(--accent-pink); margin-bottom: 5px; text-shadow: 0 0 20px rgba(255, 42, 95, 0.5); }
+        .ldr-subtitle { font-size: 0.9rem; color: rgba(255,255,255,0.7); font-style: italic; margin-bottom: 30px; }
+        
+        .message-box { padding: 30px 20px; width: 100%; max-width: 360px; line-height: 1.7; font-size: 1.05rem; margin-bottom: 40px; }
 
-        .message-box {
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 77, 109, 0.2); padding: 25px 20px; border-radius: 20px;
-            width: 100%; max-width: 350px; line-height: 1.6; font-size: 1.05rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); margin-bottom: 30px;
-        }
-
-        /* --- NEW: Interactive Virtual Cake --- */
+        /* --- 3D INTERACTIVE CAKE SECTION --- */
         .interactive-cake-section {
-            background: rgba(0,0,0,0.3); border-radius: 20px; padding: 30px 20px;
-            width: 100%; max-width: 350px; margin-bottom: 40px; border: 1px solid rgba(255, 77, 109, 0.15);
-            text-align: center;
+            padding: 40px 20px; width: 100%; max-width: 360px; margin-bottom: 50px;
+            text-align: center; position: relative; overflow: hidden;
+        }
+        .interactive-cake-section h2 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--text-light); margin-bottom: 10px; text-shadow: 0 0 10px var(--accent-pink); }
+        
+        .mic-btn {
+            background: linear-gradient(45deg, var(--accent-red), var(--accent-pink)); color: white;
+            border: none; padding: 10px 20px; border-radius: 30px; font-weight: 600; font-family: 'Poppins';
+            margin-bottom: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 42, 95, 0.4);
+            animation: pulse 2s infinite; -webkit-tap-highlight-color: transparent;
         }
         
-        .interactive-cake-section h2 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--text-light); margin-bottom: 5px; }
-        
-        .cake-instruction-text { font-size: 0.95rem; color: var(--accent-pink); margin-bottom: 40px; font-style: italic; height: 40px; }
+        .cake-instruction-text { font-size: 1rem; color: var(--text-light); margin-bottom: 30px; height: 50px; font-weight: 300; }
 
-        .cake-stage { position: relative; display: flex; justify-content: center; align-items: flex-end; height: 120px; margin-bottom: 20px;}
-
-        /* CSS Cake */
-        .cake {
-            width: 160px; height: 80px; background: #ffb3c1; border-radius: 10px; position: relative;
-            box-shadow: inset 0 -25px 0 #ff4d6d, inset 0 10px 0 #fff0f3, 0 10px 15px rgba(0,0,0,0.5);
-            cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 0.2s;
+        /* 3D Cake Scene */
+        .cake-stage {
+            position: relative; height: 200px; width: 100%; display: flex; justify-content: center; align-items: center;
+            perspective: 1000px; /* Gives the 3D depth */
         }
-        .cake:active { transform: scale(0.95); }
+
+        .cake-wrapper {
+            position: relative; width: 160px; height: 120px; 
+            transform-style: preserve-3d; transform: rotateX(15deg);
+        }
+
+        .cake-half {
+            position: absolute; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, #ffb3c1 0%, #ff758f 100%);
+            border-radius: 15px;
+            box-shadow: inset 0 10px 0 #fff0f3, 0 15px 20px rgba(0,0,0,0.6);
+            transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s;
+        }
+        
+        /* Simulating the left and right sides of the cake for cutting */
+        .cake-left { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); }
+        .cake-right { clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); }
 
         .candle {
-            width: 12px; height: 40px; position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
-            background: repeating-linear-gradient(45deg, #fff, #fff 5px, #ff4d6d 5px, #ff4d6d 10px);
-            border-radius: 4px;
+            width: 12px; height: 45px; position: absolute; top: -45px; left: 50%; transform: translateX(-50%);
+            background: repeating-linear-gradient(45deg, #fff, #fff 4px, #ff2a5f 4px, #ff2a5f 8px);
+            border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); z-index: 5;
         }
         .flame {
-            width: 16px; height: 26px; background: #ff9900; position: absolute; top: -28px; left: 50%;
+            width: 18px; height: 30px; background: #ffcc00; position: absolute; top: -32px; left: 50%;
             transform: translateX(-50%); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            box-shadow: 0 0 20px #ff9900, 0 0 40px #ffcc00; cursor: pointer;
-            animation: flicker 0.5s infinite alternate; transition: opacity 0.3s;
+            box-shadow: 0 0 20px #ff9900, 0 0 50px #ffcc00, inset 0 0 10px #fff; cursor: pointer;
+            animation: flicker 0.4s infinite alternate; transition: all 0.3s;
         }
-        .flame.out { opacity: 0; pointer-events: none; box-shadow: none; }
+        .flame.out { opacity: 0; transform: translateX(-50%) scale(0) translateY(-20px); }
 
-        /* The slice that appears after cutting */
-        .cake-slice {
-            font-size: 5rem; cursor: pointer; display: none; -webkit-tap-highlight-color: transparent;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); transition: transform 0.2s;
+        .knife {
+            position: absolute; font-size: 3rem; top: -80px; left: 50%; transform: translateX(-50%) rotate(180deg);
+            opacity: 0; pointer-events: none; z-index: 10; filter: drop-shadow(0 10px 5px rgba(0,0,0,0.5));
         }
-        .cake-slice:active { transform: scale(0.9); }
 
-        /* --- LDR Timeline --- */
-        .journey-container {
-            width: 100%; max-width: 350px; margin-bottom: 40px; text-align: left; padding: 20px;
-            background: rgba(0,0,0,0.3); border-radius: 20px; border: 1px solid rgba(255, 77, 109, 0.1);
+        /* The 3D Slice that zooms into the screen */
+        .cake-slice-3d {
+            position: absolute; font-size: 6rem; opacity: 0; pointer-events: none;
+            transform: scale(0.1) translateZ(-500px); filter: drop-shadow(0 20px 20px rgba(0,0,0,0.8));
+            transition: clip-path 0.3s; cursor: pointer; -webkit-tap-highlight-color: transparent; z-index: 20;
         }
-        .journey-container h2 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--accent-pink); text-align: center; margin-bottom: 20px; }
-        .timeline { position: relative; padding-left: 20px; border-left: 2px solid var(--timeline-line); }
-        .timeline-item { position: relative; margin-bottom: 30px; }
+        /* Bite mark effect */
+        .bitten { clip-path: polygon(0 0, 100% 0, 100% 50%, 80% 60%, 100% 80%, 100% 100%, 0 100%); }
+
+        #giant-hbd {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            font-family: 'Dancing Script', cursive; font-size: 5rem; color: #ffcc00;
+            text-shadow: 0 0 30px #ff2a5f, 0 0 10px #fff; z-index: 100; pointer-events: none; opacity: 0;
+            text-align: center; width: 100%; line-height: 1.2;
+        }
+
+        /* --- Existing LDR Sections (Glassmorphism updated) --- */
+        .journey-container { width: 100%; max-width: 360px; margin-bottom: 50px; text-align: left; padding: 30px 20px; }
+        .journey-container h2 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--accent-pink); text-align: center; margin-bottom: 25px; }
+        .timeline { position: relative; padding-left: 20px; border-left: 2px solid var(--accent-pink); }
+        .timeline-item { position: relative; margin-bottom: 35px; }
         .timeline-item:last-child { margin-bottom: 0; }
-        .timeline-dot { position: absolute; left: -26px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--accent-pink); box-shadow: 0 0 10px var(--accent-pink); }
-        .timeline-content h3 { font-size: 1.1rem; color: var(--text-light); margin-bottom: 5px; }
-        .timeline-content p { font-size: 0.9rem; color: rgba(255, 255, 255, 0.7); line-height: 1.4; }
+        .timeline-dot { position: absolute; left: -26px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--accent-pink); box-shadow: 0 0 15px var(--accent-pink); }
+        .timeline-content h3 { font-size: 1.15rem; color: var(--text-light); margin-bottom: 5px; font-weight: 600;}
+        .timeline-content p { font-size: 0.95rem; color: rgba(255, 255, 255, 0.7); line-height: 1.5; }
 
-        /* --- 3D Memory Cards --- */
-        .memories-container { display: flex; flex-direction: column; gap: 25px; width: 100%; max-width: 350px; margin-bottom: 40px; }
-        .memory-card { perspective: 1000px; width: 100%; height: 250px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .memories-container { display: flex; flex-direction: column; gap: 30px; width: 100%; max-width: 360px; margin-bottom: 50px; }
+        .memory-card { perspective: 1000px; width: 100%; height: 260px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
         .memory-card.flipped .card-inner { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 15px; border: 2px solid rgba(255, 77, 109, 0.4); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); overflow: hidden; }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5); overflow: hidden; }
         .card-front img { width: 100%; height: 100%; object-fit: cover; }
-        .card-back { background: linear-gradient(135deg, var(--accent-red), var(--primary-bg)); transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; padding: 20px; font-family: 'Dancing Script', cursive; font-size: 1.5rem; text-align: center; }
+        .card-back { background: var(--glass-bg); backdrop-filter: blur(15px); transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; padding: 20px; font-family: 'Dancing Script', cursive; font-size: 1.8rem; text-align: center; color: var(--accent-pink); }
 
-        /* --- Secret Vault --- */
-        .secret-vault { background: rgba(0, 0, 0, 0.4); border-radius: 15px; padding: 20px; width: 100%; max-width: 350px; border: 1px dashed var(--accent-pink); margin-bottom: 40px; text-align: center; }
-        .secret-vault h2 { font-size: 1.2rem; margin-bottom: 15px; color: var(--text-light); }
-        .secret-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--accent-pink); background: #1a050a; color: white; font-family: 'Poppins', sans-serif; text-align: center; margin-bottom: 15px; font-size: 1.1rem; letter-spacing: 2px; }
-        .secret-btn { background: var(--accent-pink); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 1rem; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600; }
-        #secret-message { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-family: 'Dancing Script', cursive; font-size: 1.5rem; color: var(--accent-pink); }
+        .secret-vault { padding: 30px 20px; width: 100%; max-width: 360px; margin-bottom: 50px; text-align: center; }
+        .secret-vault h2 { font-size: 1.4rem; margin-bottom: 10px; color: var(--accent-pink); }
+        .secret-input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--accent-pink); background: rgba(0,0,0,0.5); color: white; text-align: center; margin-bottom: 15px; font-size: 1.1rem; letter-spacing: 2px; outline: none; transition: box-shadow 0.3s; }
+        .secret-input:focus { box-shadow: 0 0 15px rgba(255, 42, 95, 0.5); }
+        .secret-btn { background: var(--accent-pink); color: white; border: none; padding: 12px 25px; border-radius: 12px; font-size: 1rem; cursor: pointer; font-weight: 600; width: 100%; transition: transform 0.2s; }
+        .secret-btn:active { transform: scale(0.95); }
+        #secret-message { display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border); font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: var(--text-light); }
 
-        /* --- Final Gift --- */
-        .gift-container { margin-bottom: 80px; text-align: center; width: 100%; max-width: 350px; }
-        .gift-box { font-size: 4rem; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .coupon { display: none; background: #fff; color: #1a050a; padding: 20px; border-radius: 10px; margin-top: 20px; border: 3px dashed var(--accent-red); transform: scale(0); }
-        .coupon h3 { font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: var(--accent-red); margin-bottom: 10px;}
+        .gift-container { margin-bottom: 100px; text-align: center; width: 100%; max-width: 360px; }
+        .gift-box { font-size: 5rem; cursor: pointer; -webkit-tap-highlight-color: transparent; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)); transition: transform 0.2s; }
+        .gift-box:active { transform: scale(0.9); }
+        .coupon { display: none; background: rgba(255,255,255,0.9); color: #0f0508; padding: 30px 20px; border-radius: 15px; margin-top: 20px; border: 3px dashed var(--accent-red); transform: scale(0); box-shadow: 0 20px 30px rgba(0,0,0,0.6); }
+        .coupon h3 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--accent-red); margin-bottom: 15px;}
 
         /* --- Animations --- */
         @keyframes heartbeat { 0%, 28%, 70% { transform: scale(1); } 14%, 42% { transform: scale(1.15); } }
         @keyframes fadeInOut { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
-        @keyframes flicker { 0% { opacity: 1; transform: translateX(-50%) scale(1); } 100% { opacity: 0.8; transform: translateX(-50%) scale(1.1) skewX(2deg); } }
-        .particle { position: fixed; font-size: 1.5rem; pointer-events: none; animation: floatUp linear forwards; z-index: 1; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 42, 95, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255, 42, 95, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 42, 95, 0); } }
+        @keyframes flicker { 0% { opacity: 1; transform: translateX(-50%) scale(1); } 100% { opacity: 0.8; transform: translateX(-50%) scale(1.1) skewX(3deg); } }
+        .particle { position: fixed; pointer-events: none; animation: floatUp linear forwards; z-index: 1; }
         @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; } 100% { transform: translateY(-20vh) scale(1.2) rotate(360deg); opacity: 0; } }
+        .wind-particle { position: absolute; background: white; border-radius: 50%; opacity: 0.5; filter: blur(2px); z-index: 20;}
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <!-- Audio Tracks -->
-    <audio id="bg-music" src="YOUR_AMBIENT_MUSIC.mp3" preload="auto" loop></audio>
-    <audio id="hbd-song" src="YOUR_HAPPY_BIRTHDAY_SONG.mp3" preload="auto"></audio>
+    <audio id="hbd-song" src="happy-birthday.mp3" preload="auto"></audio>
+
+    <div id="giant-hbd">Happy<br>Birthday! 🎉</div>
 
     <div id="intro-screen" class="screen">
         <div class="heart-button" id="open-btn">❤️</div>
@@ -173,29 +204,30 @@
         <h1>Happy Birthday!</h1>
         <div class="ldr-subtitle">Distance means so little when someone means so much.</div>
         
-        <div class="message-box reveal-item">
+        <div class="message-box glass reveal-item">
             My love,<br><br>
             I wish I could be there to hold you today. Until I can wrap my arms around you, I made this little digital space just for us. I hope it makes you smile! 💖
         </div>
 
-        <!-- NEW: Interactive Virtual Cake Section -->
-        <div class="interactive-cake-section reveal-item">
+        <div class="interactive-cake-section glass reveal-item">
             <h2>Make a Wish 🎂</h2>
-            <p class="cake-instruction-text" id="cake-instruction">Close your eyes, make a wish, and tap the flame to blow it out!</p>
+            <button class="mic-btn" id="mic-btn">🎙️ Enable Mic to Blow</button>
+            <p class="cake-instruction-text" id="cake-instruction">Make a wish, then <b>blow into your phone</b> (or tap the flame) to put it out!</p>
             
-            <div class="cake-stage">
-                <!-- The CSS Cake -->
-                <div class="cake" id="whole-cake">
-                    <div class="candle">
+            <div class="cake-stage" id="cake-stage">
+                <div class="cake-wrapper" id="cake-wrapper">
+                    <div class="cake-half cake-left" id="cake-left"></div>
+                    <div class="cake-half cake-right" id="cake-right"></div>
+                    <div class="candle" id="candle">
                         <div class="flame" id="flame"></div>
                     </div>
                 </div>
-                <!-- The Slice (Hidden initially) -->
-                <div class="cake-slice" id="cake-slice">🍰</div>
+                <div class="knife" id="knife">🔪</div>
+                <div class="cake-slice-3d" id="cake-slice">🍰</div>
             </div>
         </div>
 
-        <div class="journey-container reveal-item">
+        <div class="journey-container glass reveal-item">
             <h2>Our Track ✈️</h2>
             <div class="timeline">
                 <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">
@@ -212,7 +244,7 @@
 
         <div class="memories-container reveal-item">
             <div class="memory-card"><div class="card-inner">
-                <div class="card-front"><img src="https://via.placeholder.com/400x300/ff4d6d/ffffff?text=Screenshot+of+us" alt="Call Memory"></div>
+                <div class="card-front"><img src="https://via.placeholder.com/400x300/ff2a5f/ffffff?text=Screenshot+of+us" alt="Call Memory"></div>
                 <div class="card-back">My favorite face on FaceTime ✨</div>
             </div></div>
             <div class="memory-card"><div class="card-inner">
@@ -221,17 +253,17 @@
             </div></div>
         </div>
 
-        <div class="secret-vault reveal-item">
+        <div class="secret-vault glass reveal-item">
             <h2>🔒 Secret Memory Lock</h2>
-            <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 10px;">The day the world got a little brighter.<br>Format: DD/MM/YYYY</p>
+            <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 15px;">The day the world got a little brighter.<br>Format: DD/MM/YYYY</p>
             <input type="text" id="secret-input" class="secret-input" placeholder="DD/MM/YYYY">
-            <button id="secret-submit" class="secret-btn">Unlock</button>
+            <button id="secret-submit" class="secret-btn">Unlock Memory</button>
             <div id="secret-message">Every day since 15/07/2001 has been leading up to us. I love you! 💕</div>
         </div>
 
         <div class="gift-container reveal-item">
-            <h2>🎁 One Last Surprise</h2>
-            <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 10px;">Tap the box</p>
+            <h2 style="font-family: 'Dancing Script'; font-size: 2.5rem; color: var(--accent-pink); margin-bottom: 10px;">One Last Surprise</h2>
+            <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 20px;">Tap the box</p>
             <div class="gift-box" id="final-gift">💝</div>
             
             <div class="coupon" id="gift-coupon">
@@ -243,10 +275,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Intro & Master Timeline ---
+            // --- Master Intro Timeline ---
             const openBtn = document.getElementById('open-btn');
-            const bgMusic = document.getElementById('bg-music');
-            const hbdSong = document.getElementById('hbd-song');
             const masterTl = gsap.timeline({ paused: true });
 
             masterTl.to("#intro-screen", { opacity: 0, duration: 0.5, onComplete: () => document.getElementById('intro-screen').style.display = 'none' });
@@ -264,84 +294,162 @@
             masterTl.from("#surprise-screen h1, .ldr-subtitle", { y: -30, opacity: 0, duration: 1, stagger: 0.2, ease: "back.out(1.7)" })
                     .from(".reveal-item", { y: 40, opacity: 0, duration: 0.8, stagger: 0.15, ease: "power2.out", onComplete: startHeartRain }, "-=0.2");
 
-            openBtn.addEventListener('click', () => {
-                // Uncomment this if you add a background ambient track
-                // bgMusic.play().catch(e => console.log("Audio play prevented"));
-                masterTl.play();
-            });
+            openBtn.addEventListener('click', () => masterTl.play());
 
-            // --- NEW: INTERACTIVE CAKE LOGIC ---
+            // --- THE 3D CAKE & BLOW LOGIC ---
+            const micBtn = document.getElementById('mic-btn');
             const flame = document.getElementById('flame');
-            const wholeCake = document.getElementById('whole-cake');
+            const cakeWrapper = document.getElementById('cake-wrapper');
+            const cakeLeft = document.getElementById('cake-left');
+            const cakeRight = document.getElementById('cake-right');
+            const candle = document.getElementById('candle');
+            const knife = document.getElementById('knife');
             const cakeSlice = document.getElementById('cake-slice');
             const cakeInstruction = document.getElementById('cake-instruction');
-            let cakeState = 0; // 0: lit, 1: blown out, 2: cut, 3: bitten
+            const hbdSong = document.getElementById('hbd-song');
+            const giantHbd = document.getElementById('giant-hbd');
+            const cakeStage = document.getElementById('cake-stage');
+            
+            let cakeState = 0; // 0: lit, 1: blown, 2: ready to bite, 3: bitten
 
-            // Step 1: Blow out the candle
-            flame.addEventListener('click', (e) => {
-                e.stopPropagation(); // Stop the cake underneath from being clicked yet
-                if(cakeState === 0) {
-                    flame.classList.add('out');
-                    cakeState = 1;
+            // Microphone Audio Detection
+            let audioContext, analyser, microphone, dataArray;
+            
+            micBtn.addEventListener('click', async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    analyser = audioContext.createAnalyser();
+                    microphone = audioContext.createMediaStreamSource(stream);
+                    microphone.connect(analyser);
+                    analyser.fftSize = 256;
+                    const bufferLength = analyser.frequencyBinCount;
+                    dataArray = new Uint8Array(bufferLength);
                     
-                    // Fade text out and change it
-                    gsap.to(cakeInstruction, {opacity: 0, duration: 0.3, onComplete: () => {
-                        cakeInstruction.innerHTML = "Yay! 🥳<br>Now tap the cake to cut it!";
+                    micBtn.style.display = 'none';
+                    cakeInstruction.innerHTML = "Mic active! 🎙️<br><b>Blow hard into your phone!</b> 🌬️";
+                    
+                    listenToBlow();
+                } catch (err) {
+                    micBtn.innerText = "Mic denied. Just tap the flame!";
+                    micBtn.style.animation = "none";
+                }
+            });
+
+            function listenToBlow() {
+                if (cakeState !== 0) return; // Stop listening if already blown
+                requestAnimationFrame(listenToBlow);
+                analyser.getByteFrequencyData(dataArray);
+                let sum = 0;
+                for(let i=0; i<dataArray.length; i++) sum += dataArray[i];
+                let average = sum / dataArray.length;
+                
+                // If loud noise (blowing) is detected
+                if (average > 60) {
+                    triggerBlowOut();
+                }
+            }
+
+            // Fallback: Tap to blow
+            flame.addEventListener('click', () => { if(cakeState === 0) triggerBlowOut(); });
+
+            function triggerBlowOut() {
+                if(cakeState !== 0) return;
+                cakeState = 1;
+                micBtn.style.display = 'none';
+                
+                // Wind particle effect
+                for(let i=0; i<10; i++) {
+                    let wind = document.createElement('div');
+                    wind.className = 'wind-particle';
+                    wind.style.width = Math.random() * 20 + 10 + 'px';
+                    wind.style.height = '2px';
+                    wind.style.left = '60%';
+                    wind.style.top = '20px';
+                    cakeStage.appendChild(wind);
+                    gsap.to(wind, { x: -200, opacity: 0, duration: 0.5 + Math.random(), ease: "power1.out", onComplete: () => wind.remove() });
+                }
+
+                flame.classList.add('out');
+                
+                // Text update & Knife Animation
+                gsap.to(cakeInstruction, {opacity: 0, duration: 0.3, onComplete: () => {
+                    cakeInstruction.innerHTML = "Yay! 🥳<br>Tap the cake to cut it!";
+                    gsap.to(cakeInstruction, {opacity: 1, duration: 0.3});
+                    
+                    // Drop the knife down
+                    gsap.to(knife, { y: 60, opacity: 1, duration: 0.8, ease: "bounce.out" });
+                }});
+            }
+
+            // Slice the cake
+            cakeWrapper.addEventListener('click', () => {
+                if(cakeState === 1) {
+                    cakeState = 2;
+                    
+                    // 1. Knife slices down and disappears
+                    gsap.to(knife, { y: 120, rotation: 160, opacity: 0, duration: 0.5 });
+                    
+                    // 2. Hide the candle
+                    gsap.to(candle, { opacity: 0, duration: 0.2 });
+
+                    // 3. Split the cake in half (3D translation)
+                    gsap.to(cakeLeft, { x: -50, y: 20, rotationZ: -10, opacity: 0, duration: 1, ease: "power2.inOut" });
+                    gsap.to(cakeRight, { x: 50, y: 20, rotationZ: 10, opacity: 0, duration: 1, ease: "power2.inOut", onComplete: () => {
+                        cakeWrapper.style.display = 'none';
+                    }});
+
+                    // 4. The Slice Zooms OUT into the screen
+                    cakeSlice.style.pointerEvents = "all";
+                    gsap.fromTo(cakeSlice, 
+                        { scale: 0, y: 50, rotation: -20, opacity: 0 }, 
+                        { scale: 1.5, y: -20, rotation: 0, opacity: 1, duration: 1, ease: "elastic.out(1, 0.7)", delay: 0.5 }
+                    );
+
+                    // Update Text
+                    gsap.to(cakeInstruction, {opacity: 0, duration: 0.3, delay: 0.8, onComplete: () => {
+                        cakeInstruction.innerHTML = "Say Aaah! 🥺<br><b>Tap the slice to take a huge bite!</b>";
                         gsap.to(cakeInstruction, {opacity: 1, duration: 0.3});
                     }});
                 }
             });
 
-            // Step 2: Cut the cake
-            wholeCake.addEventListener('click', () => {
-                if(cakeState === 1) {
-                    cakeState = 2;
-                    
-                    // Animate whole cake disappearing and slice appearing
-                    gsap.to(wholeCake, { scale: 0, opacity: 0, duration: 0.4, ease: "back.in(1.5)", onComplete: () => {
-                        wholeCake.style.display = 'none';
-                        cakeSlice.style.display = 'block';
-                        gsap.fromTo(cakeSlice, {scale: 0, rotation: -20}, {scale: 1, rotation: 0, duration: 0.6, ease: "elastic.out(1, 0.5)"});
-                        
-                        gsap.to(cakeInstruction, {opacity: 0, duration: 0.3, onComplete: () => {
-                            cakeInstruction.innerHTML = "Perfect cut! 🔪<br>Say Aaa! Tap the slice to take a virtual bite 🥺";
-                            gsap.to(cakeInstruction, {opacity: 1, duration: 0.3});
-                        }});
-                    }});
-                }
-            });
-
-            // Step 3: Take a bite and Play Song!
+            // Take a bite!
             cakeSlice.addEventListener('click', () => {
                 if(cakeState === 2) {
                     cakeState = 3;
                     
-                    // Change to a dirty plate or just animate it
-                    gsap.to(cakeSlice, { y: -20, scale: 1.1, duration: 0.2, yoyo: true, repeat: 1 });
-                    cakeSlice.innerText = "🍽️"; // Swaps to empty plate icon
+                    // 1. Add bite mark via CSS clip-path class
+                    cakeSlice.classList.add('bitten');
                     
-                    gsap.to(cakeInstruction, {opacity: 0, duration: 0.3, onComplete: () => {
-                        cakeInstruction.innerHTML = "Yummy! Happy Birthday my love! 🎉";
-                        cakeInstruction.style.fontWeight = "bold";
-                        gsap.to(cakeInstruction, {opacity: 1, duration: 0.3});
-                    }});
+                    // 2. Wiggle the slice
+                    gsap.to(cakeSlice, { rotation: 10, yoyo: true, repeat: 3, duration: 0.1 });
+                    
+                    // 3. Play Song
+                    hbdSong.play().catch(e => console.log("Audio play blocked by browser"));
 
-                    // PLAY HAPPY BIRTHDAY SONG
-                    // This will work because the user actively tapped the screen!
-                    if(bgMusic) bgMusic.pause(); // Pause ambient track if playing
-                    hbdSong.play().catch(e => console.log("HBD Audio play prevented"));
+                    // 4. Epic Confetti
+                    const duration = 5000;
+                    const end = Date.now() + duration;
+                    (function frame() {
+                        confetti({ particleCount: 8, angle: 60, spread: 55, origin: { x: 0, y: 0.8 }, colors: ['#ff2a5f', '#fff', '#ffcc00'] });
+                        confetti({ particleCount: 8, angle: 120, spread: 55, origin: { x: 1, y: 0.8 }, colors: ['#ff2a5f', '#fff', '#ffcc00'] });
+                        if (Date.now() < end) requestAnimationFrame(frame);
+                    }());
 
-                    // Celebrate!
-                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 }, colors: ['#ff4d6d', '#fff', '#ffcc00'] });
+                    // 5. Giant Happy Birthday Text Popup
+                    gsap.to(giantHbd, { scale: 1, opacity: 1, duration: 1.5, ease: "elastic.out(1, 0.4)" });
+                    
+                    // Hide instructions
+                    gsap.to(cakeInstruction, { opacity: 0, duration: 0.5 });
                 }
             });
 
-            // --- Card Flips ---
+            // --- Other Interactions (Cards, Vault, Gift) ---
             document.querySelectorAll('.memory-card').forEach(card => {
                 card.addEventListener('click', () => card.classList.toggle('flipped'));
             });
 
-            // --- Date Lock Logic ---
             const secretSubmit = document.getElementById('secret-submit');
             const secretInput = document.getElementById('secret-input');
             const secretMessage = document.getElementById('secret-message');
@@ -353,7 +461,7 @@
                     secretInput.classList.add('hidden');
                     secretSubmit.classList.add('hidden');
                     secretMessage.style.display = 'block';
-                    confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, colors: ['#ff4d6d', '#fff'] });
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.8 }, colors: ['#ff2a5f', '#fff'] });
                 } else {
                     gsap.fromTo(secretInput, { x: -10 }, { x: 10, duration: 0.1, yoyo: true, repeat: 3 });
                     secretInput.value = "";
@@ -361,7 +469,6 @@
                 }
             });
 
-            // --- Final Gift Logic ---
             const finalGift = document.getElementById('final-gift');
             const giftCoupon = document.getElementById('gift-coupon');
             let giftOpened = false;
@@ -369,33 +476,27 @@
             finalGift.addEventListener('click', () => {
                 if(giftOpened) return;
                 giftOpened = true;
-
-                gsap.to(finalGift, { rotation: 15, yoyo: true, repeat: 3, duration: 0.1, onComplete: () => {
+                gsap.to(finalGift, { rotation: 20, yoyo: true, repeat: 5, duration: 0.05, onComplete: () => {
                     finalGift.style.display = 'none'; 
                     giftCoupon.style.display = 'block'; 
                     gsap.to(giftCoupon, { scale: 1, rotation: 360, duration: 0.8, ease: "back.out(1.5)" });
-                    const end = Date.now() + 3000;
-                    (function frame() {
-                        confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff4d6d', '#c9184a', '#ffb3c1'] });
-                        confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff4d6d', '#c9184a', '#ffb3c1'] });
-                        if (Date.now() < end) requestAnimationFrame(frame);
-                    }());
+                    confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, zIndex: 200 });
                 }});
             });
 
-            // --- Background Particles ---
+            // --- Ambient Background Particles ---
             function startHeartRain() {
-                const hearts = ['❤️', '💖', '💕', '✈️', '🌸'];
+                const hearts = ['❤️', '💖', '✨', '✈️'];
                 setInterval(() => {
                     const particle = document.createElement('div');
-                    particle.classList.add('particle');
+                    particle.className = 'particle';
                     particle.innerText = hearts[Math.floor(Math.random() * hearts.length)];
                     particle.style.left = Math.random() * 100 + 'vw';
-                    particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                    particle.style.fontSize = (Math.random() * 1.5 + 0.8) + 'rem';
+                    particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                    particle.style.fontSize = (Math.random() * 1 + 0.8) + 'rem';
                     document.getElementById('surprise-screen').appendChild(particle);
-                    setTimeout(() => particle.remove(), 6000); 
-                }, 300); 
+                    setTimeout(() => particle.remove(), 8000); 
+                }, 400); 
             }
         });
     </script>
