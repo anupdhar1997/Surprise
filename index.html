@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Happy Birthday! ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- GSAP & Canvas Confetti -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
         :root {
@@ -13,220 +16,197 @@
             --text-light: #fff0f3;
             --accent-pink: #ff4d6d;
             --accent-red: #c9184a;
+            --timeline-line: rgba(255, 77, 109, 0.3);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--primary-bg);
             color: var(--text-light);
             font-family: 'Poppins', sans-serif;
             overflow: hidden;
-            height: 100vh;
-            width: 100vw;
+            height: 100vh; width: 100vw;
         }
 
-        /* Screen Management */
+        /* --- Screens --- */
         .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            z-index: 10;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; z-index: 10;
         }
 
         #intro-screen {
-            display: flex;
-            opacity: 1;
-            background: linear-gradient(135deg, #2b0814 0%, #1a050a 100%);
-            z-index: 30;
+            display: flex; opacity: 1;
+            background: linear-gradient(135deg, #2b0814 0%, #1a050a 100%); z-index: 30;
         }
 
+        #anticipation-screen { background: #0a0104; z-index: 20; }
+        
+        #surprise-screen {
+            background: linear-gradient(135deg, #350117 0%, #140005 100%);
+            padding: 50px 20px; text-align: center; z-index: 10;
+            justify-content: flex-start; overflow-y: auto; overflow-x: hidden;
+        }
+
+        #surprise-screen::-webkit-scrollbar { display: none; }
+
+        /* --- Elements --- */
         .heart-button {
-            font-size: 5rem;
-            cursor: pointer;
-            animation: heartbeat 1.5s infinite;
+            font-size: 5rem; cursor: pointer; animation: heartbeat 1.5s infinite;
             filter: drop-shadow(0 0 20px rgba(255, 77, 109, 0.6));
-            user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
         .instruction {
-            margin-top: 20px;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            color: var(--accent-pink);
-            text-transform: uppercase;
-            animation: fadeInOut 2s infinite;
-        }
-
-        /* --- Anticipation Screen --- */
-        #anticipation-screen {
-            background: #0a0104;
-            z-index: 20;
+            margin-top: 20px; font-size: 1.2rem; letter-spacing: 2px; color: var(--accent-pink);
+            text-transform: uppercase; animation: fadeInOut 2s infinite;
         }
 
         .anticipation-text {
-            position: absolute;
-            font-family: 'Dancing Script', cursive;
-            font-size: 3rem;
-            color: var(--accent-pink);
-            opacity: 0;
-            text-align: center;
-            width: 90%;
+            position: absolute; font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem; color: var(--accent-pink); opacity: 0; text-align: center; width: 90%;
             text-shadow: 0 0 15px rgba(255, 77, 109, 0.5);
         }
 
-        /* --- Surprise Screen (Now Scrollable) --- */
-        #surprise-screen {
-            background: linear-gradient(135deg, #350117 0%, #140005 100%);
-            padding: 50px 20px;
-            text-align: center;
-            z-index: 10;
-            justify-content: flex-start; /* Allows scrolling from the top */
-            overflow-y: auto; /* Enables vertical scrolling */
-        }
-
-        /* Hide scrollbar for a cleaner app-like look */
-        #surprise-screen::-webkit-scrollbar {
-            display: none;
-        }
-
         h1 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 3.5rem;
-            color: var(--accent-pink);
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 10px rgba(255, 77, 109, 0.4);
-            z-index: 2;
+            font-family: 'Dancing Script', cursive; font-size: 3.5rem; color: var(--accent-pink);
+            margin-bottom: 5px; text-shadow: 2px 2px 10px rgba(255, 77, 109, 0.4);
+        }
+
+        .ldr-subtitle {
+            font-size: 0.9rem; color: var(--text-light); opacity: 0.8;
+            margin-bottom: 25px; font-style: italic;
         }
 
         .message-box {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 77, 109, 0.2);
-            padding: 25px 20px;
-            border-radius: 20px;
-            max-width: 90%;
-            width: 350px;
-            line-height: 1.6;
-            font-size: 1.1rem;
-            z-index: 2;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 77, 109, 0.2); padding: 25px 20px; border-radius: 20px;
+            width: 100%; max-width: 350px; line-height: 1.6; font-size: 1.05rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); margin-bottom: 30px;
         }
 
-        .scroll-hint {
-            font-size: 0.9rem;
-            color: var(--accent-pink);
-            margin-bottom: 20px;
-            opacity: 0.8;
-            letter-spacing: 1px;
-            animation: fadeInOut 2s infinite;
+        /* --- NEW: The Journey Track (Timeline) --- */
+        .journey-container {
+            width: 100%; max-width: 350px; margin-bottom: 40px; text-align: left;
+            padding: 20px; background: rgba(0,0,0,0.3); border-radius: 20px;
+            border: 1px solid rgba(255, 77, 109, 0.1);
         }
 
-        /* --- 3D Interactive Memory Cards --- */
+        .journey-container h2 {
+            font-family: 'Dancing Script', cursive; font-size: 2.2rem;
+            color: var(--accent-pink); text-align: center; margin-bottom: 20px;
+        }
+
+        .timeline {
+            position: relative; padding-left: 20px;
+            border-left: 2px solid var(--timeline-line);
+        }
+
+        .timeline-item {
+            position: relative; margin-bottom: 30px;
+        }
+
+        .timeline-item:last-child { margin-bottom: 0; }
+
+        .timeline-dot {
+            position: absolute; left: -26px; top: 0;
+            width: 10px; height: 10px; border-radius: 50%;
+            background: var(--accent-pink);
+            box-shadow: 0 0 10px var(--accent-pink);
+        }
+
+        .timeline-content h3 { font-size: 1.1rem; color: var(--text-light); margin-bottom: 5px; }
+        .timeline-content p { font-size: 0.9rem; color: rgba(255, 255, 255, 0.7); line-height: 1.4; }
+
+        /* --- 3D Memory Cards (Modified for LDR) --- */
         .memories-container {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            width: 100%;
-            max-width: 350px;
-            padding-bottom: 50px;
-            z-index: 2;
+            display: flex; flex-direction: column; gap: 25px;
+            width: 100%; max-width: 350px; margin-bottom: 40px;
         }
 
         .memory-card {
-            perspective: 1000px;
-            width: 100%;
-            height: 250px;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
+            perspective: 1000px; width: 100%; height: 250px;
+            cursor: pointer; -webkit-tap-highlight-color: transparent;
         }
 
         .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
+            position: relative; width: 100%; height: 100%;
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
         }
 
-        /* The class that triggers the flip */
-        .memory-card.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
+        .memory-card.flipped .card-inner { transform: rotateY(180deg); }
 
         .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden; /* Hides the back when flipped */
-            backface-visibility: hidden;
-            border-radius: 15px;
-            border: 2px solid rgba(255, 77, 109, 0.4);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-            overflow: hidden;
+            position: absolute; width: 100%; height: 100%;
+            -webkit-backface-visibility: hidden; backface-visibility: hidden;
+            border-radius: 15px; border: 2px solid rgba(255, 77, 109, 0.4);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); overflow: hidden;
         }
 
-        .card-front img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .card-front img { width: 100%; height: 100%; object-fit: cover; }
 
         .card-back {
             background: linear-gradient(135deg, var(--accent-red), var(--primary-bg));
-            transform: rotateY(180deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.8rem;
-            color: var(--text-light);
-            border: 2px solid var(--accent-pink);
+            transform: rotateY(180deg); display: flex; align-items: center; justify-content: center;
+            padding: 20px; font-family: 'Dancing Script', cursive; font-size: 1.5rem; text-align: center;
         }
 
-        /* --- Particles --- */
+        /* --- Secret Vault --- */
+        .secret-vault {
+            background: rgba(0, 0, 0, 0.4); border-radius: 15px;
+            padding: 20px; width: 100%; max-width: 350px;
+            border: 1px dashed var(--accent-pink); margin-bottom: 40px; text-align: center;
+        }
+
+        .secret-vault h2 { font-size: 1.2rem; margin-bottom: 15px; color: var(--text-light); }
+        
+        .secret-input {
+            width: 100%; padding: 12px; border-radius: 8px;
+            border: 1px solid var(--accent-pink); background: #1a050a;
+            color: white; font-family: 'Poppins', sans-serif;
+            text-align: center; margin-bottom: 15px; font-size: 1.1rem;
+            letter-spacing: 2px;
+        }
+
+        .secret-btn {
+            background: var(--accent-pink); color: white; border: none;
+            padding: 10px 20px; border-radius: 8px; font-size: 1rem;
+            cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600;
+        }
+
+        #secret-message {
+            display: none; margin-top: 15px; padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: 'Dancing Script', cursive; font-size: 1.5rem; color: var(--accent-pink);
+        }
+
+        /* --- Final Gift --- */
+        .gift-container { margin-bottom: 80px; text-align: center; width: 100%; max-width: 350px; }
+        .gift-box { font-size: 4rem; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        
+        .coupon {
+            display: none; background: #fff; color: #1a050a;
+            padding: 20px; border-radius: 10px; margin-top: 20px;
+            border: 3px dashed var(--accent-red); transform: scale(0);
+        }
+
+        .coupon h3 { font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: var(--accent-red); margin-bottom: 10px;}
+
+        /* --- Animations --- */
+        @keyframes heartbeat { 0%, 28%, 70% { transform: scale(1); } 14%, 42% { transform: scale(1.15); } }
+        @keyframes fadeInOut { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
         .particle {
-            position: fixed; /* Keep hearts floating over the whole screen even when scrolling */
-            font-size: 1.5rem;
-            color: var(--accent-pink);
-            user-select: none;
-            pointer-events: none;
-            animation: floatUp linear forwards;
-            z-index: 1;
+            position: fixed; font-size: 1.5rem; pointer-events: none;
+            animation: floatUp linear forwards; z-index: 1;
         }
-
         @keyframes floatUp {
             0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; }
             100% { transform: translateY(-20vh) scale(1.2) rotate(360deg); opacity: 0; }
         }
-
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.15); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.15); }
-            70% { transform: scale(1); }
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -239,57 +219,83 @@
     </div>
 
     <div id="anticipation-screen" class="screen">
-        <div class="anticipation-text">Close your eyes...</div>
-        <div class="anticipation-text">Make a wish...</div>
-        <div class="anticipation-text">Because today...</div>
-        <div class="anticipation-text">Is all about you.</div>
+        <div class="anticipation-text">Miles apart...</div>
+        <div class="anticipation-text">But right here in my heart...</div>
+        <div class="anticipation-text">Today is all about you.</div>
     </div>
 
     <div id="surprise-screen" class="screen">
         <h1>Happy Birthday!</h1>
+        <div class="ldr-subtitle">Distance means so little when someone means so much.</div>
         
-        <div class="message-box">
+        <div class="message-box reveal-item">
             My love,<br><br>
-            Wishing you the most beautiful birthday. Every moment with you is a gift. I hope this year brings you as much joy as you bring to my life! 💖
+            I wish I could be there to hold you today. Until I can wrap my arms around you, I made this little digital space just for us. I hope it makes you smile! 💖
         </div>
 
-        <div class="scroll-hint">▼ Tap the cards for a surprise ▼</div>
+        <!-- NEW: Our Journey Track -->
+        <div class="journey-container reveal-item">
+            <h2>Our Track ✈️</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>How We Connected</h3>
+                        <p>That very first conversation that changed everything. I knew you were special instantly.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Late Night Calls</h3>
+                        <p>Falling asleep on the phone, timezones disappearing, and talking about everything and nothing.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>The Future</h3>
+                        <p>Counting down the days until the screen isn't between us anymore. I can't wait.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <div class="memories-container">
+        <!-- 3D Memory Cards -->
+        <div class="memories-container reveal-item">
+            <div class="memory-card">
+                <div class="card-inner">
+                    <div class="card-front"><img src="https://via.placeholder.com/400x300/ff4d6d/ffffff?text=Screenshot+of+us" alt="Video Call Memory"></div>
+                    <div class="card-back">My favorite face on FaceTime ✨</div>
+                </div>
+            </div>
+            <div class="memory-card">
+                <div class="card-inner">
+                    <div class="card-front"><img src="https://via.placeholder.com/400x300/c9184a/ffffff?text=Another+Photo" alt="Memory"></div>
+                    <div class="card-back">Worth every mile between us 🌍</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Date Lock -->
+        <div class="secret-vault reveal-item">
+            <h2>🔒 Secret Memory Lock</h2>
+            <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 10px;">The day the world got a little brighter.<br>Format: DD/MM/YYYY</p>
+            <input type="text" id="secret-input" class="secret-input" placeholder="DD/MM/YYYY">
+            <button id="secret-submit" class="secret-btn">Unlock</button>
+            <div id="secret-message">Every day since 15/07/2001 has been leading up to us. I love you! 💕</div>
+        </div>
+
+        <!-- The LDR Gift -->
+        <div class="gift-container reveal-item">
+            <h2>🎁 One Last Surprise</h2>
+            <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 10px;">Tap the box</p>
+            <div class="gift-box" id="final-gift">💝</div>
             
-            <div class="memory-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="https://via.placeholder.com/400x300/ff4d6d/ffffff?text=Photo+1" alt="Memory 1">
-                    </div>
-                    <div class="card-back">
-                        I love your smile! ✨
-                    </div>
-                </div>
+            <div class="coupon" id="gift-coupon">
+                <h3>Virtual Movie Date 🍿</h3>
+                <p><strong>Good for ONE cozy video-call movie night!</strong><br><br>Plus, I'm ordering your favorite food directly to your door. Dinner is on me tonight! 🥂</p>
             </div>
-
-            <div class="memory-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="https://via.placeholder.com/400x300/c9184a/ffffff?text=Photo+2" alt="Memory 2">
-                    </div>
-                    <div class="card-back">
-                        My favorite adventure partner 🌍
-                    </div>
-                </div>
-            </div>
-
-            <div class="memory-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="https://via.placeholder.com/400x300/ffb3c1/1a050a?text=Photo+3" alt="Memory 3">
-                    </div>
-                    <div class="card-back">
-                        Forever & Always ❤️
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 
@@ -299,64 +305,82 @@
             const bgMusic = document.getElementById('bg-music');
             const masterTl = gsap.timeline({ paused: true });
 
-            // 1. Intro Screen Fade
-            masterTl.to("#intro-screen", {
-                opacity: 0,
-                duration: 0.5,
-                onComplete: () => document.getElementById('intro-screen').style.display = 'none'
-            });
-
-            // 2. Anticipation Screen Sequence
+            masterTl.to("#intro-screen", { opacity: 0, duration: 0.5, onComplete: () => document.getElementById('intro-screen').style.display = 'none' });
             masterTl.set("#anticipation-screen", { display: 'flex', opacity: 1 });
-            const phrases = gsap.utils.toArray('.anticipation-text');
             
+            const phrases = gsap.utils.toArray('.anticipation-text');
             phrases.forEach((phrase) => {
-                masterTl.fromTo(phrase, 
-                    { scale: 0.8, opacity: 0 }, 
-                    { scale: 1, opacity: 1, duration: 1.5, ease: "power2.out" }
-                )
-                .to(phrase, { 
-                    scale: 1.2, opacity: 0, duration: 1, ease: "power2.in" 
-                }, "+=0.2"); 
+                masterTl.fromTo(phrase, { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.5, ease: "power2.out" })
+                        .to(phrase, { scale: 1.2, opacity: 0, duration: 1, ease: "power2.in" }, "+=0.2"); 
             });
 
-            // 3. Prepare Final Screen
             masterTl.set("#anticipation-screen", { display: 'none' })
                     .set("#surprise-screen", { display: 'flex', opacity: 1 });
 
-            // 4. Reveal Animations
-            masterTl.from("#surprise-screen h1", { y: -50, opacity: 0, duration: 1, ease: "back.out(1.7)" })
-                    .from(".message-box", { y: 30, opacity: 0, duration: 1, ease: "power2.out" }, "-=0.6")
-                    .from(".scroll-hint", { opacity: 0, duration: 1 }, "-=0.5")
-                    // Stagger the cards so they pop in one after another
-                    .from(".memory-card", { 
-                        y: 50, 
-                        scale: 0.8,
-                        opacity: 0, 
-                        duration: 0.8, 
-                        stagger: 0.2, // 0.2 second delay between each card animating
-                        ease: "back.out(1.5)",
-                        onComplete: startHeartRain
-                    }, "-=0.5");
+            masterTl.from("#surprise-screen h1, .ldr-subtitle", { y: -30, opacity: 0, duration: 1, stagger: 0.2, ease: "back.out(1.7)" })
+                    .from(".reveal-item", { y: 40, opacity: 0, duration: 0.8, stagger: 0.15, ease: "power2.out", onComplete: startHeartRain }, "-=0.2");
 
-            // --- Start Experience on Click ---
             openBtn.addEventListener('click', () => {
                 // bgMusic.play().catch(e => console.log("Audio play prevented"));
                 masterTl.play();
             });
 
-            // --- Setup Card Flipping Logic ---
-            const cards = document.querySelectorAll('.memory-card');
-            cards.forEach(card => {
-                card.addEventListener('click', () => {
-                    // Toggles the 'flipped' class on and off when tapped
-                    card.classList.toggle('flipped');
-                });
+            // Card Flips
+            document.querySelectorAll('.memory-card').forEach(card => {
+                card.addEventListener('click', () => card.classList.toggle('flipped'));
             });
 
-            // --- Particles Background ---
+            // --- DATE LOCK LOGIC ---
+            const secretSubmit = document.getElementById('secret-submit');
+            const secretInput = document.getElementById('secret-input');
+            const secretMessage = document.getElementById('secret-message');
+            
+            // The secret password is exactly the date you requested
+            const correctAnswer = "15/07/2001"; 
+
+            secretSubmit.addEventListener('click', () => {
+                const userAnswer = secretInput.value.trim();
+                if(userAnswer === correctAnswer) {
+                    secretInput.classList.add('hidden');
+                    secretSubmit.classList.add('hidden');
+                    secretMessage.style.display = 'block';
+                    confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, colors: ['#ff4d6d', '#fff'] });
+                } else {
+                    gsap.fromTo(secretInput, { x: -10 }, { x: 10, duration: 0.1, yoyo: true, repeat: 3 });
+                    secretInput.value = "";
+                    secretInput.placeholder = "Try DD/MM/YYYY! 😉";
+                }
+            });
+
+            // --- FINAL GIFT LOGIC ---
+            const finalGift = document.getElementById('final-gift');
+            const giftCoupon = document.getElementById('gift-coupon');
+            let giftOpened = false;
+
+            finalGift.addEventListener('click', () => {
+                if(giftOpened) return;
+                giftOpened = true;
+
+                gsap.to(finalGift, { rotation: 15, yoyo: true, repeat: 3, duration: 0.1, onComplete: () => {
+                    finalGift.style.display = 'none'; 
+                    giftCoupon.style.display = 'block'; 
+                    
+                    gsap.to(giftCoupon, { scale: 1, rotation: 360, duration: 0.8, ease: "back.out(1.5)" });
+
+                    const duration = 3000;
+                    const end = Date.now() + duration;
+
+                    (function frame() {
+                        confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff4d6d', '#c9184a', '#ffb3c1'] });
+                        confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff4d6d', '#c9184a', '#ffb3c1'] });
+                        if (Date.now() < end) requestAnimationFrame(frame);
+                    }());
+                }});
+            });
+
+            // Particles Background
             function startHeartRain() {
-                const hearts = ['❤️', '💖', '💕', '✨', '🌸'];
+                const hearts = ['❤️', '💖', '💕', '✈️', '🌸']; // Added an airplane emoji for LDR!
                 setInterval(() => {
                     const particle = document.createElement('div');
                     particle.classList.add('particle');
@@ -364,7 +388,6 @@
                     particle.style.left = Math.random() * 100 + 'vw';
                     particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
                     particle.style.fontSize = (Math.random() * 1.5 + 0.8) + 'rem';
-                    
                     document.getElementById('surprise-screen').appendChild(particle);
                     setTimeout(() => particle.remove(), 6000); 
                 }, 300); 
