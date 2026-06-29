@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday! ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        :root {
+            --primary-bg: #1a050a;
+            --text-light: #fff0f3;
+            --accent-pink: #ff4d6d;
+            --accent-red: #c9184a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Screen Management */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: all;
+            z-index: 20;
+        }
+
+        .screen.hidden {
+            opacity: 0;
+            transform: scale(1.2); /* Slightly larger zoom out for the intro screen */
+            pointer-events: none;
+        }
+
+        /* --- Intro Screen Styles --- */
+        #intro-screen {
+            background: linear-gradient(135deg, #2b0814 0%, #1a050a 100%);
+        }
+
+        .heart-button {
+            font-size: 5rem;
+            cursor: pointer;
+            animation: heartbeat 1.5s infinite;
+            filter: drop-shadow(0 0 20px rgba(255, 77, 109, 0.6));
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .instruction {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            color: var(--accent-pink);
+            text-transform: uppercase;
+            animation: fadeInOut 2s infinite;
+        }
+
+        /* --- Surprise Screen Styles --- */
+        #surprise-screen {
+            background: linear-gradient(135deg, #350117 0%, #140005 100%);
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Notice we do NOT add opacity: 0 to these elements in CSS. 
+           GSAP will handle their starting states automatically. 
+        */
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: var(--accent-pink);
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 10px rgba(255, 77, 109, 0.4);
+            z-index: 2;
+        }
+
+        .message-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 77, 109, 0.2);
+            padding: 25px 20px;
+            border-radius: 20px;
+            max-width: 90%;
+            width: 350px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            z-index: 2;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .photo-frame {
+            margin-top: 25px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid var(--accent-pink);
+            overflow: hidden;
+            z-index: 2;
+            box-shadow: 0 0 25px rgba(255, 77, 109, 0.5);
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- Animations --- */
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.15); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.15); }
+            70% { transform: scale(1); }
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 1.5rem;
+            color: var(--accent-pink);
+            user-select: none;
+            pointer-events: none;
+            animation: floatUp linear forwards;
+            z-index: 1;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0.5) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20vh) scale(1.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" src="YOUR_AUDIO_FILE.mp3" preload="auto"></audio>
+
+    <div id="intro-screen" class="screen active">
+        <div class="heart-button" id="open-btn">❤️</div>
+        <div class="instruction">Tap to Open</div>
+    </div>
+
+    <div id="surprise-screen" class="screen">
+        <h1 class="reveal-item">Happy Birthday!</h1>
+        
+        <div class="message-box reveal-item">
+            My love,<br><br>
+            Wishing you the most beautiful birthday. Every moment with you is a gift. I hope this year brings you as much joy as you bring to my life! 💖
+        </div>
+
+        <div class="photo-frame reveal-item">
+            <img src="https://via.placeholder.com/300x300/ff4d6d/ffffff?text=Her+Photo" alt="Her Photo">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const introScreen = document.getElementById('intro-screen');
+            const surpriseScreen = document.getElementById('surprise-screen');
+            const openBtn = document.getElementById('open-btn');
+            const bgMusic = document.getElementById('bg-music');
+
+            // --- 1. SETUP GSAP TIMELINE ---
+            // 'paused: true' prevents it from running as soon as the page loads.
+            const revealTimeline = gsap.timeline({ paused: true });
+
+            revealTimeline
+                // Animate the H1: Drop in from the top with a bounce
+                .from("#surprise-screen h1", { 
+                    y: -50, 
+                    opacity: 0, 
+                    duration: 1, 
+                    ease: "back.out(1.7)" 
+                })
+                // Animate the Message Box: Slide up and fade in
+                // The "-=0.6" at the end tells GSAP to start this animation 0.6 seconds EARLY (overlapping the H1)
+                .from(".message-box", { 
+                    y: 30, 
+                    opacity: 0, 
+                    duration: 1, 
+                    ease: "power2.out" 
+                }, "-=0.6")
+                // Animate the Photo: Spin and pop in
+                .from(".photo-frame", { 
+                    scale: 0, 
+                    rotation: -25, 
+                    opacity: 0, 
+                    duration: 1.2, 
+                    ease: "elastic.out(1, 0.5)" 
+                }, "-=0.7");
+
+
+            // --- 2. HANDLE THE BUTTON CLICK ---
+            openBtn.addEventListener('click', () => {
+                // bgMusic.play().catch(e => console.log("Audio play prevented"));
+
+                // Transition screens
+                introScreen.classList.remove('active');
+                introScreen.classList.add('hidden');
+                
+                setTimeout(() => {
+                    surpriseScreen.classList.add('active');
+                    
+                    // Start the background hearts
+                    startHeartRain();
+
+                    // TRIGGER THE GSAP ANIMATION!
+                    revealTimeline.play(); 
+
+                }, 400); // Trigger slightly before the fade transition fully completes
+            });
+
+            // --- 3. PARTICLE SYSTEM ---
+            function startHeartRain() {
+                const hearts = ['❤️', '💖', '💕', '✨', '🌸'];
+                
+                setInterval(() => {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    particle.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+                    particle.style.left = Math.random() * 100 + 'vw';
+                    particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                    particle.style.fontSize = (Math.random() * 1.5 + 0.8) + 'rem';
+                    
+                    document.getElementById('surprise-screen').appendChild(particle);
+
+                    setTimeout(() => {
+                        particle.remove();
+                    }, 6000); 
+                }, 300); 
+            }
+        });
+    </script>
+</body>
+</html>
