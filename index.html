@@ -12,7 +12,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="surprise-locked">
+
+  <section id="release-countdown" class="release-countdown" aria-labelledby="countdown-heading">
+    <div class="glass-card countdown-card">
+      <div class="card-badge">A little birthday countdown</div>
+      <span class="countdown-sparkle" aria-hidden="true">✦</span>
+      <h1 id="countdown-heading" class="title-serif">A little surprise.<br /><span class="text-gradient">Worth the wait.</span></h1>
+      <p class="subtitle">Something special is waiting for you, Misti.<br />Just a little longer until your birthday surprise.</p>
+      <div class="countdown-grid" role="timer" aria-live="off" aria-label="Time until your birthday surprise opens">
+        <div class="countdown-unit"><span id="countdown-days" class="countdown-value">00</span><span class="countdown-label">Days</span></div>
+        <div class="countdown-unit"><span id="countdown-hours" class="countdown-value">00</span><span class="countdown-label">Hours</span></div>
+        <div class="countdown-unit"><span id="countdown-minutes" class="countdown-value">00</span><span class="countdown-label">Minutes</span></div>
+        <div class="countdown-unit"><span id="countdown-seconds" class="countdown-value">00</span><span class="countdown-label">Seconds</span></div>
+      </div>
+      <p class="countdown-date">Opens <time datetime="2026-09-13T20:00:00+05:30">13 September 2026 · 8:00 PM IST</time></p>
+      <p id="countdown-status" class="card-footnote" role="status">Your surprise will open automatically. ✦</p>
+      <button id="btn-celebration-sound" type="button" class="btn btn-secondary countdown-sound" aria-pressed="true">Celebration sound on</button>
+      <button id="btn-open-surprise" type="button" class="btn btn-primary hidden">Open your surprise ✦</button>
+    </div>
+  </section>
+
+  <canvas id="release-fireworks" class="release-fireworks" aria-hidden="true" hidden></canvas>
 
   <!-- Ambient Starfield Canvas -->
   <canvas id="starfield" class="starfield" aria-hidden="true"></canvas>
@@ -20,7 +41,7 @@
   <canvas id="celebration-canvas" class="celebration-canvas" aria-hidden="true"></canvas>
 
   <!-- Top Navigation -->
-  <header class="top-nav">
+  <header class="top-nav" inert>
     <div class="nav-top-row">
       <div class="nav-brand"><span class="nav-sparkle" aria-hidden="true">✦</span><span class="nav-title">A little world for you</span></div>
       <button id="music-toggle" class="music-toggle" type="button" aria-label="Play music" aria-pressed="false">
@@ -43,7 +64,7 @@
   </header>
 
   <!-- Main App -->
-  <main id="app-container" class="app-container">
+  <main id="app-container" class="app-container" inert>
 
     <!-- ═══════════════════════════════════════════════
          SCENE 0 · WELCOME
@@ -571,11 +592,12 @@
   </div>
 
   <p id="audio-status" class="sr-only" role="status"></p>
-  <noscript><p class="noscript-message">Happy birthday, my best friend. You make the ordinary feel extraordinary. ♡<br />Enable JavaScript to open your interactive surprises.</p></noscript>
+  <noscript><p class="noscript-message">Enable JavaScript to see the countdown and open your birthday surprise.</p></noscript>
 
   <!-- Audio -->
+  <audio id="fireworks-sound" src="assets/audio/fireworks.wav" preload="auto"></audio>
   <audio id="bg-music" src="assets/audio/happy-birthday.mp3" preload="none"></audio>
 
-  <script src="script.js"></script>
+  <script src="release.js"></script>
 </body>
 </html>
