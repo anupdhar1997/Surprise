@@ -1,7 +1,7 @@
 /** Open the birthday journey at the scheduled India time, regardless of the visitor's timezone. */
 (() => {
   'use strict';
-  const opensAt = Date.parse('2026-09-22T00:00:00+05:30');
+  const opensAt = Date.parse('2026-09-13T20:23:00+05:30');
   const countdown = document.getElementById('release-countdown');
   const status = document.getElementById('countdown-status');
   const retry = document.getElementById('btn-open-surprise');
@@ -17,11 +17,9 @@
   let timer;
   let opening = false;
   const waitedForRelease = Date.now() < opensAt;
-  const soundButton = document.getElementById('btn-celebration-sound');
   const fireworksSound = document.getElementById('fireworks-sound');
   let celebrationAudio;
   let celebrationGain;
-  let soundEnabled = true;
   let priming = false;
   let soundPrimed = false;
   let celebrationActive = false;
@@ -39,7 +37,7 @@
   }
 
   function startCrackerPlayback() {
-    if (!soundEnabled || soundComplete || priming || playbackPending || playsRemaining === 0) return;
+    if (soundComplete || priming || playbackPending || playsRemaining === 0) return;
     if (!fireworksSound.paused && !fireworksSound.ended) return;
     if (celebrationAudio) {
       celebrationGain.gain.value = .6;
@@ -60,7 +58,7 @@
   }
 
   function prepareSound() {
-    if (!soundEnabled || soundComplete || priming) return;
+    if (soundComplete || priming) return;
     if (celebrationActive) { startCrackerPlayback(); return; }
     try {
       if (!celebrationAudio) {
@@ -92,23 +90,11 @@
   }
 
   function unlockSound(event) {
-    if (event.target.closest && event.target.closest('#btn-celebration-sound')) return;
     if (event.repeat || (event.type === 'pointerdown' && event.button !== 0)) return;
     prepareSound();
   }
   document.addEventListener('pointerdown', unlockSound);
   document.addEventListener('keydown', unlockSound);
-
-  soundButton.addEventListener('click', () => {
-    soundEnabled = !soundEnabled;
-    soundButton.setAttribute('aria-pressed', String(soundEnabled));
-    soundButton.textContent = soundEnabled ? 'Celebration sound on' : 'Celebration sound off';
-    if (soundEnabled) prepareSound();
-    else {
-      fireworksSound.pause();
-      if (celebrationAudio) celebrationAudio.suspend().catch(() => {});
-    }
-  });
 
   fireworksSound.addEventListener('ended', () => {
     if (!celebrationActive || !soundStarted || soundComplete) return;
