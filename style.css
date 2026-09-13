@@ -42,6 +42,9 @@ img { max-width: 100%; }
 .countdown-label { margin-top: 8px; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: #d4bdcf; }
 .countdown-date { font-size: 12px; line-height: 1.8; color: var(--rose-light); text-wrap: balance; }
 #btn-open-surprise { margin-top: 18px; }
+.countdown-sound { margin-top: 18px; font-size: 12px; }
+.countdown-sound[aria-pressed="true"] { background: #f6c86a25; border-color: var(--gold); }
+.welcome-card .countdown-sound { margin: 0 0 16px; }
 .release-fireworks { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 120; pointer-events: none; }
 @media (max-width: 359px) {
   .countdown-grid { gap: 6px; }
