@@ -30,6 +30,26 @@ img { max-width: 100%; }
 .ambient-glow { position: fixed; inset: -15%; z-index: 0; pointer-events: none; background: radial-gradient(ellipse at 15% 20%, #a93d6333, transparent 52%), radial-gradient(ellipse at 85% 70%, #7333b938, transparent 55%), radial-gradient(ellipse at 50% 50%, #b9822814, transparent 40%); animation: ambientFloat 18s ease-in-out infinite alternate; }
 @keyframes ambientFloat { to { transform: translate(3%, 2%) scale(1.06); } }
 
+/* Start locked in the markup so the surprise never flashes before the countdown. */
+.surprise-locked .top-nav, .surprise-locked #app-container, .surprise-locked #photo-modal { display: none !important; }
+.release-countdown { position: fixed; inset: 0; z-index: 20; display: flex; flex-direction: column; align-items: center; padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); overflow-y: auto; }
+.countdown-card { margin-block: auto; flex-shrink: 0; }
+.countdown-sparkle { display: block; margin: 0 0 18px; color: var(--gold); font-size: 54px; line-height: 1; text-shadow: 0 0 32px #f6c86a66; }
+.countdown-card .subtitle { margin-bottom: 0; }
+.countdown-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; width: 100%; margin: 26px 0; }
+.countdown-unit { display: flex; flex-direction: column; align-items: center; padding: 16px 4px; border: 1px solid #f6c86a40; border-radius: 16px; background: linear-gradient(160deg, #ff52871c, #f6c86a08); }
+.countdown-value { font-family: var(--font-serif); font-size: clamp(30px, 8vw, 56px); font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.1; color: var(--gold-light); }
+.countdown-label { margin-top: 8px; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: #d4bdcf; }
+.countdown-date { font-size: 12px; line-height: 1.8; color: var(--rose-light); text-wrap: balance; }
+#btn-open-surprise { margin-top: 18px; }
+.countdown-sound { margin-top: 18px; font-size: 12px; }
+.countdown-sound[aria-pressed="true"] { background: #f6c86a25; border-color: var(--gold); }
+.release-fireworks { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 120; pointer-events: none; }
+@media (max-width: 359px) {
+  .countdown-grid { gap: 6px; }
+  .countdown-label { font-size: 8px; letter-spacing: .02em; }
+}
+
 /* The header has its own space. Scrolling scenes never pass underneath it. */
 .top-nav { position: fixed; inset: 0 0 auto; height: var(--header-height); z-index: 50; padding: calc(8px + env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) 4px max(14px, env(safe-area-inset-left, 0px)); background: linear-gradient(#10091eed, #10091ef8); border-bottom: 1px solid #f6c86a13; }
 .nav-top-row, .journey-nav { max-width: 1080px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
