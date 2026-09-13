@@ -1,7 +1,7 @@
 /** Open the birthday journey at the scheduled India time, regardless of the visitor's timezone. */
 (() => {
   'use strict';
-  const opensAt = Date.parse('2026-09-13T20:52:00+05:30');
+  const opensAt = Date.parse('2026-09-13T21:00:00+05:30');
   const countdown = document.getElementById('release-countdown');
   const status = document.getElementById('countdown-status');
   const retry = document.getElementById('btn-open-surprise');
@@ -94,6 +94,14 @@
 
   function unlockSound(event) {
     if (event.repeat) return;
+    if (countdown.hidden) {
+      const welcomeCard = event.target.closest && event.target.closest('#scene-welcome.scene--active .welcome-card');
+      if (!welcomeCard || soundComplete) return;
+      if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
+      if (!celebrationActive) celebrateOpening();
+      else startCrackerPlayback();
+      return;
+    }
     prepareSound();
   }
   // A completed click/tap counts as activation on touch devices too.
@@ -190,7 +198,7 @@
       document.removeEventListener('visibilitychange', refreshWhenVisible);
       window.removeEventListener('pageshow', updateCountdown);
       if (waitedForRelease) celebrateOpening();
-      else finishSound();
+      // Late visitors can still start their celebration by tapping the welcome card.
     };
     script.onerror = () => {
       script.remove();
