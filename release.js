@@ -1,7 +1,7 @@
 /** Open the birthday journey at the scheduled India time, regardless of the visitor's timezone. */
 (() => {
   'use strict';
-  const opensAt = Date.parse('2026-09-13T20:36:00+05:30');
+  const opensAt = Date.parse('2026-09-22T00:00:00+05:30');
   const countdown = document.getElementById('release-countdown');
   const status = document.getElementById('countdown-status');
   const retry = document.getElementById('btn-open-surprise');
