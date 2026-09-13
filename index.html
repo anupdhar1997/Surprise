@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0e071c" />
+  <meta name="description" content="A magical, interactive birthday surprise for my best friend." />
+  <title>Happy Birthday, My Best Friend ✦</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Ambient Starfield Canvas -->
+  <canvas id="starfield" class="starfield" aria-hidden="true"></canvas>
+  <div class="ambient-glow" aria-hidden="true"></div>
+  <canvas id="celebration-canvas" class="celebration-canvas" aria-hidden="true"></canvas>
+
+  <!-- Top Navigation -->
+  <header class="top-nav">
+    <div class="nav-top-row">
+      <div class="nav-brand"><span class="nav-sparkle" aria-hidden="true">✦</span><span class="nav-title">A little world for you</span></div>
+      <button id="music-toggle" class="music-toggle" type="button" aria-label="Play music" aria-pressed="false">
+        <span aria-hidden="true">♫</span><span id="music-label">Sound off</span>
+        <span class="sound-wave" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      </button>
+    </div>
+    <nav class="journey-nav" aria-label="Your birthday journey">
+      <span id="journey-label" class="journey-label">01 / 07 · Your surprise</span>
+      <div class="step-indicator" id="step-indicator">
+        <button type="button" class="step-dot active" data-step="0" aria-label="Your surprise" aria-current="step"><span></span></button>
+        <button type="button" class="step-dot" data-step="1" aria-label="Make a wish" disabled><span></span></button>
+        <button type="button" class="step-dot" data-step="2" aria-label="Cut the cake" disabled><span></span></button>
+        <button type="button" class="step-dot" data-step="3" aria-label="Your letter" disabled><span></span></button>
+        <button type="button" class="step-dot" data-step="4" aria-label="Our memories" disabled><span></span></button>
+        <button type="button" class="step-dot" data-step="5" aria-label="Three little wishes" disabled><span></span></button>
+        <button type="button" class="step-dot" data-step="6" aria-label="Happy birthday" disabled><span></span></button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main App -->
+  <main id="app-container" class="app-container">
+
+    <!-- ═══════════════════════════════════════════════
+         SCENE 0 · WELCOME
+    ═══════════════════════════════════════════════ -->
+    <section id="scene-welcome" class="scene scene--active" aria-labelledby="welcome-title">
+      <div class="scene-card glass-card welcome-card depth-card">
+        <div class="card-badge">For you. Just because you’re you.</div>
+        <h1 id="welcome-title" class="title-serif">A little universe.<br /><span class="text-gradient">All for you.</span></h1>
+        <p class="subtitle">I tucked a few little surprises into this corner of the stars. Every one has your name on it.</p>
+        <button id="gift-box" class="gift-stage" type="button" aria-label="Unwrap your birthday surprise">
+          <span class="gift-orbit orbit-one" aria-hidden="true"></span><span class="gift-orbit orbit-two" aria-hidden="true"></span>
+          <span class="gift-magic" aria-hidden="true">✦</span>
+          <span class="gift-float" aria-hidden="true"><span class="gift-object">
+            <span class="gift-face gift-front"></span><span class="gift-face gift-side"></span>
+            <span class="gift-lid"><span class="gift-lid-top"></span><span class="gift-lid-front"></span><span class="gift-lid-side"></span><span class="gift-bow bow-left"></span><span class="gift-bow bow-right"></span><span class="gift-knot"></span></span>
+            <span class="gift-tag">for you ♡</span>
+          </span></span>
+          <span class="gift-floor" aria-hidden="true"></span>
+        </button>
+        <p class="gift-hint font-handwritten" id="gift-hint" role="status">Tap the gift to unwrap it ✦</p>
+        <div class="action-wrap">
+          <button id="btn-start" class="btn btn-primary glow-effect" type="button">Unwrap My Surprise <span aria-hidden="true">✦</span></button>
+        </div>
+        <p class="card-footnote">Take your time. This little world is yours.</p>
+      </div>
+    </section>
+
+    <!-- SCENE 1 · A LITTLE BIRTHDAY WISH -->
+    <section id="scene-cake" class="scene" inert aria-hidden="true" aria-labelledby="cake-title">
+      <div class="scene-card glass-card cake-card">
+        <div class="card-badge">A Little Birthday Magic</div>
+        <h2 id="cake-title" class="title-serif">A cake. A candle.<br /><span class="text-gradient">A wish just for you.</span></h2>
+        <p class="subtitle cake-prompt" id="cake-prompt" role="status">Take a little moment. Make a big wish.<br />Then tap the cake to send it to the stars.</p>
+        <button type="button" class="cake-stage" id="wish-cake" aria-label="Blow out the birthday candle"><svg class="birthday-cake" viewBox="0 0 460 350" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="wish-icing" x2="0" y2="1"><stop stop-color="#ffb7cd"/><stop offset="1" stop-color="#dc5e8f"/></linearGradient>
+    <linearGradient id="wish-gold"><stop stop-color="#9b6435"/><stop offset=".45" stop-color="#ffe4a2"/><stop offset="1" stop-color="#bb854b"/></linearGradient>
+    <radialGradient id="wish-glow"><stop stop-color="#ffacbb" stop-opacity=".17"/><stop offset="1" stop-color="#ffacbb" stop-opacity="0"/></radialGradient>
+    <mask id="wish-cake-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="460" height="350">
+      <rect width="460" height="350" fill="white" />
+      <path class="cake-gap" d="M220 160 L320 181 L320 266 A115 43 0 0 1 253 286 L253 201 Z" fill="black" />
+    </mask>
+  </defs>
+  <ellipse cx="230" cy="192" rx="205" ry="152" fill="url(#wish-glow)"/>
+  <g class="cake-sparkles" fill="#f6c86a">
+    <path d="M75 126l3 9 9 3-9 3-3 9-3-9-9-3 9-3zM361 88l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/>
+    <circle cx="114" cy="73" r="2"/><circle cx="348" cy="235" r="2"/><circle cx="390" cy="174" r="2"/>
+    <path d="M145 42v8m-4-4h8M374 272v8m-4-4h8" stroke="#f6c86a" stroke-linecap="round"/>
+  </g>
+  <ellipse cx="225" cy="320" rx="124" ry="13" fill="#090410" opacity=".5"/>
+  <path d="M205 279h34l5 30h-44z" fill="url(#wish-gold)"/>
+  <ellipse cx="222" cy="311" rx="65" ry="9" fill="url(#wish-gold)"/>
+  <ellipse cx="220" cy="272" rx="142" ry="31" fill="#a57142"/>
+  <ellipse cx="220" cy="266" rx="142" ry="31" fill="#f8da9b"/>
+  <ellipse cx="220" cy="264" rx="132" ry="26" fill="#ffecc5"/>
+  <!-- The exposed sponge stays behind as the matching wedge slides out. -->
+  <g class="cake-interior">
+    <path d="M220 160l100 21v85l-100-21z" fill="#c37b64"/>
+    <path d="M220 181l100 21v12l-100-21zM220 221l100 21v12l-100-21z" fill="#ffead5"/>
+    <path d="M220 207l100 21v7l-100-21z" fill="#ad3e69"/>
+    <path d="M220 160l33 41v85l-33-41z" fill="#e9a985"/>
+    <path d="M220 181l33 41v12l-33-41zM220 221l33 41v12l-33-41z" fill="#fff0dc"/>
+    <path d="M220 207l33 41v7l-33-41z" fill="#cd547b"/>
+  </g>
+  <g class="cake-whole" mask="url(#wish-cake-mask)">
+  <path d="M105 160v85a115 43 0 0 0 230 0v-85z" fill="url(#wish-icing)"/>
+  <path d="M106 214a115 43 0 0 0 228 0v12a115 43 0 0 1-228 0z" fill="#fff0df"/>
+  <path d="M108 251a115 40 0 0 0 224 0" fill="none" stroke="#ffcbdb" stroke-width="8" stroke-linecap="round" stroke-dasharray="1 12"/>
+  <ellipse cx="220" cy="160" rx="115" ry="43" fill="#fff0e3"/>
+  <path d="M105 160a115 43 0 0 0 230 0v12q-5 16-13 5v12q-8 17-15 0v-5q-13 7-26 9v17q-8 18-16 0v-13q-15 5-29 5v8q-8 16-16 0v-7q-17 0-33-3v16q-8 17-16 0v-20q-14-3-25-8v7q-8 17-16 0v-17q-18-7-25-18z" fill="#fff0e3"/>
+
+  <g fill="#fff9ee" stroke="#f9d4d2" stroke-width="1.5">
+    <path d="M122 149q-8-11 4-15q4-13 10-1q14 2 7 14q-10 10-21 2z"/>
+    <path d="M163 129q-8-11 4-15q4-13 10-1q14 2 7 14q-10 10-21 2z"/>
+    <path d="M246 129q-8-11 4-15q4-13 10-1q14 2 7 14q-10 10-21 2z"/>
+    <path d="M300 150q-8-11 4-15q4-13 10-1q14 2 7 14q-10 10-21 2z"/>
+    <path d="M153 178q-8-11 4-15q4-13 10-1q14 2 7 14q-10 10-21 2z"/>
+  </g>
+  <g fill="#db4973"><circle cx="132" cy="134" r="6"/><circle cx="173" cy="114" r="6"/><circle cx="256" cy="114" r="6"/><circle cx="310" cy="135" r="6"/><circle cx="163" cy="163" r="6"/></g>
+  <g stroke="#dc9f51" stroke-width="3" stroke-linecap="round"><path d="M186 145l4 3m57-9 4-3m-70 41 4-2m105-16 4 3m-83-39 3 2"/></g>
+  </g>
+  <g class="cake-wedge">
+    <!-- The visible cut face runs from the tip to the near edge of the slice. -->
+    <path d="M220 160l33 41v85l-33-41z" fill="#e4a27d"/>
+    <path d="M220 181l33 41v12l-33-41zM220 221l33 41v12l-33-41z" fill="#fff0dc"/>
+    <path d="M220 207l33 41v7l-33-41z" fill="#c74c75"/>
+    <path d="M253 201a115 43 0 0 0 67-20v85a115 43 0 0 1-67 20z" fill="url(#wish-icing)"/>
+    <path d="M253 255a115 43 0 0 0 67-20v12a115 43 0 0 1-67 20z" fill="#fff0df"/>
+    <path d="M220 160l100 21a115 43 0 0 1-67 20z" fill="#fff0e3" stroke="#f9d4d2" stroke-width="1"/>
+    <path d="M253 201a115 43 0 0 0 67-20v10q-9 8-16 8v9q-7 14-13 0v-4q-15 7-38 9z" fill="#fff0e3"/>
+    <path d="M274 187q-9-10 2-15q4-14 11-2q15 1 8 13q-9 12-21 4z" fill="#fff9ee"/>
+    <circle cx="282" cy="170" r="7" fill="#df4b74"/><circle cx="280" cy="168" r="2" fill="#ffafc5"/>
+  </g>
+  <g class="cake-candle">
+    <ellipse cx="214" cy="151" rx="12" ry="4" fill="#eec8c7"/>
+    <rect x="208" y="87" width="12" height="64" rx="3" fill="#fff3d7"/>
+    <path d="M209 98l10-6m-10 20 10-6m-10 20 10-6m-10 20 10-6" stroke="#eaa270" stroke-width="4"/>
+    <path d="M214 87v-8" stroke="#5b3543" stroke-width="2" stroke-linecap="round"/>
+    <g class="cake-flame"><ellipse cx="214" cy="66" rx="22" ry="27" fill="#ffbf57" opacity=".12"/><path d="M214 44c-3 12-12 17-10 27 2 14 21 13 21 0 0-10-8-16-11-27z" fill="#ffc463"/><path d="M214 61c-1 6-5 10-5 14 1 6 11 6 11 0 0-5-4-10-6-14z" fill="#fff7d0"/></g>
+    <path class="cake-smoke" d="M214 79c-16-13 14-18 0-31s3-18 5-22" fill="none" stroke="#f5e6e2" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <path class="cake-cut-guide" d="M220 160l100 21M220 160l33 41" fill="none" stroke="#b76575" stroke-width="2" stroke-dasharray="4 5"/>
+  <g class="cake-knife"><path d="M224 77h13v91q-13-6-13-22z" fill="#f4e8e3"/><path d="M224 77h4v77l-4-8z" fill="#b9a8bb"/><rect x="220" y="68" width="21" height="8" rx="3" fill="#f6c86a"/><rect x="225" y="24" width="12" height="45" rx="5" fill="#7c3857"/><circle cx="231" cy="36" r="2" fill="#f6c86a"/><circle cx="231" cy="56" r="2" fill="#f6c86a"/></g>
+</svg></button>
+        <div class="cake-caption action-hint" id="candle-hint"><span aria-hidden="true">☝</span> Tap the cake or the button to blow</div>
+        <div class="action-wrap">
+          <button id="btn-blow" class="btn btn-primary glow-effect" type="button">Make a Wish &amp; Blow ✦</button>
+          <button id="btn-to-slice" class="btn btn-primary hidden" type="button">Let’s Cut the Cake →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 2 · A SLICE OF HAPPINESS -->
+    <section id="scene-slice" class="scene" inert aria-hidden="true" aria-labelledby="slice-title">
+      <div class="scene-card glass-card cake-card">
+        <div class="card-badge">The Sweetest Part</div>
+        <h2 id="slice-title" class="title-serif">A little slice of<br /><span class="text-gradient">birthday happiness.</span></h2>
+        <p class="subtitle cake-prompt" id="slice-prompt" role="status">The first slice is always yours.<br />Tap the cake. There’s a little surprise inside.</p>
+        <button type="button" class="cake-stage cake-stage--cut" id="cut-stage" aria-label="Cut the birthday cake and reveal your surprise"><svg class="birthday-cake" viewBox="0 0 460 350" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="cut-icing" x2="0" y2="1"><stop stop-color="#ffb7cd"/><stop offset="1" stop-color="#dc5e8f"/></linearGradient>
+    <linearGradient id="cut-gold"><stop stop-color="#9b6435"/><stop offset=".45" stop-color="#ffe4a2"/><stop offset="1" stop-color="#bb854b"/></linearGradient>
+    <radialGradient id="cut-glow"><stop stop-color="#ffacbb" stop-opacity=".17"/><stop offset="1" stop-color="#ffacbb" stop-opacity="0"/></radialGradient>
+    <mask id="cut-cake-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="460" height="350">
+      <rect width="460" height="350" fill="white" />
+      <path class="cake-gap" d="M220 160 L320 181 L320 266 A115 43 0 0 1 253 286 L253 201 Z" fill="black" />
+    </mask>
+  </defs>
+  <ellipse cx="230" cy="192" rx="205" ry="152" fill="url(#cut-glow)"/>
+  <g class="cake-sparkles" fill="#f6c86a">
+    <path d="M75 126l3 9 9 3-9 3-3 9-3-9-9-3 9-3zM361 88l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/>
+    <circle cx="114" cy="73" r="2"/><circle cx="348" cy="235" r="2"/><circle cx="390" cy="174" r="2"/>
+    <path d="M145 42v8m-4-4h8M374 272v8m-4-4h8" stroke="#f6c86a" stroke-linecap="round"/>
+  </g>
+  <ellipse cx="225" cy="320" rx="124" ry="13" fill="#090410" opacity=".5"/>
+  <path d="M205 279h34l5 30h-44z" fill="url(#cut-gold)"/>
+  <ellipse cx="222" cy="311" rx="65" ry="9" fill="url(#cut-gold)"/>
+  <ellipse cx="220" cy="272" rx="142" ry="31" fill="#a57142"/>
+  <ellipse cx="220" cy="266" rx="142" ry="31" fill="#f8da9b"/>
+  <ellipse cx="220" cy="264" rx="132" ry="26" fill="#ffecc5"/>
+  <!-- The exposed sponge stays behind as the matching wedge slides out. -->
+  <g class="cake-interior">
+    <path d="M220 160l100 21v85l-100-21z" fill="#c37b64"/>
+    <path d="M220 181l100 21v12l-100-21zM220 221l100 21v12l-100-21z" fill="#ffead5"/>
+    <path d="M220 207l100 21v7l-100-21z" fill="#ad3e69"/>
+    <path d="M220 160l33 41v85l-33-41z" fill="#e9a985"/>
+    <path d="M220 181l33 41v12l-33-41zM220 221l33 41v12l-33-41z" fill="#fff0dc"/>
+    <path d="M220 207l33 41v7l-33-41z" fill="#cd547b"/>
+  </g>
+  <g class="cake-whole" mask="url(#cut-cake-mask)">
+  <path d="M105 160v85a115 43 0 0 0 230 0v-85z" fill="url(#cut-icing)"/>
+  <path d="M106 214a115 43 0 0 0 228 0v12a115 43 0 0 1-228 0z" fill="#fff0df"/>
+  <path d="M108 251a115 40 0 0 0 224 0" fill="none" stroke="#ffcbdb" stroke-width="8" stroke-linecap="round" stroke-dasharray="1 12"/>
+  <ellipse cx="220" cy="160" rx="115" ry="43" fill="#fff0e3"/>
+  <path d="M105 160a115 43 0 0 0 230 0v12q-5 16-13 5v12q-8 17-15 0v-5q-13 7-26 9v17q-8 18-16 0v-13q-15 5-29 5v8q-8 16-16 0v-7q-17 0-33-3v16q-8 17-16 0v-20q-14-3-25-8v7q-8 17-16 0v-17q-18-7-25-18z" fill="#fff0e3"/>
+
+  <g fill="#fff9ee" stroke="#f9d4d2" stroke-width="1.5">
+    <path d="M122 149q-8-11 4-15q4-13 10-1q14 2 7 14q-10 10-21 2z"/>
+    <path d="M163 129q-8-11 4-15q4-13 10-1q14 2 7 14q-10 10-21 2z"/>
+    <path d="M246 129q-8-11 4-15q4-13 10-1q14 2 7 14q-10 10-21 2z"/>
+    <path d="M300 150q-8-11 4-15q4-13 10-1q14 2 7 14q-10 10-21 2z"/>
+    <path d="M153 178q-8-11 4-15q4-13 10-1q14 2 7 14q-10 10-21 2z"/>
+  </g>
+  <g fill="#db4973"><circle cx="132" cy="134" r="6"/><circle cx="173" cy="114" r="6"/><circle cx="256" cy="114" r="6"/><circle cx="310" cy="135" r="6"/><circle cx="163" cy="163" r="6"/></g>
+  <g stroke="#dc9f51" stroke-width="3" stroke-linecap="round"><path d="M186 145l4 3m57-9 4-3m-70 41 4-2m105-16 4 3m-83-39 3 2"/></g>
+  </g>
+  <g class="cake-wedge">
+    <!-- The visible cut face runs from the tip to the near edge of the slice. -->
+    <path d="M220 160l33 41v85l-33-41z" fill="#e4a27d"/>
+    <path d="M220 181l33 41v12l-33-41zM220 221l33 41v12l-33-41z" fill="#fff0dc"/>
+    <path d="M220 207l33 41v7l-33-41z" fill="#c74c75"/>
+    <path d="M253 201a115 43 0 0 0 67-20v85a115 43 0 0 1-67 20z" fill="url(#cut-icing)"/>
+    <path d="M253 255a115 43 0 0 0 67-20v12a115 43 0 0 1-67 20z" fill="#fff0df"/>
+    <path d="M220 160l100 21a115 43 0 0 1-67 20z" fill="#fff0e3" stroke="#f9d4d2" stroke-width="1"/>
+    <path d="M253 201a115 43 0 0 0 67-20v10q-9 8-16 8v9q-7 14-13 0v-4q-15 7-38 9z" fill="#fff0e3"/>
+    <path d="M274 187q-9-10 2-15q4-14 11-2q15 1 8 13q-9 12-21 4z" fill="#fff9ee"/>
+    <circle cx="282" cy="170" r="7" fill="#df4b74"/><circle cx="280" cy="168" r="2" fill="#ffafc5"/>
+  </g>
+  <g class="cake-candle">
+    <ellipse cx="214" cy="151" rx="12" ry="4" fill="#eec8c7"/>
+    <rect x="208" y="87" width="12" height="64" rx="3" fill="#fff3d7"/>
+    <path d="M209 98l10-6m-10 20 10-6m-10 20 10-6m-10 20 10-6" stroke="#eaa270" stroke-width="4"/>
+    <path d="M214 87v-8" stroke="#5b3543" stroke-width="2" stroke-linecap="round"/>
+    <g class="cake-flame"><ellipse cx="214" cy="66" rx="22" ry="27" fill="#ffbf57" opacity=".12"/><path d="M214 44c-3 12-12 17-10 27 2 14 21 13 21 0 0-10-8-16-11-27z" fill="#ffc463"/><path d="M214 61c-1 6-5 10-5 14 1 6 11 6 11 0 0-5-4-10-6-14z" fill="#fff7d0"/></g>
+    <path class="cake-smoke" d="M214 79c-16-13 14-18 0-31s3-18 5-22" fill="none" stroke="#f5e6e2" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <path class="cake-cut-guide" d="M220 160l100 21M220 160l33 41" fill="none" stroke="#b76575" stroke-width="2" stroke-dasharray="4 5"/>
+  <g class="cake-knife"><path d="M224 77h13v91q-13-6-13-22z" fill="#f4e8e3"/><path d="M224 77h4v77l-4-8z" fill="#b9a8bb"/><rect x="220" y="68" width="21" height="8" rx="3" fill="#f6c86a"/><rect x="225" y="24" width="12" height="45" rx="5" fill="#7c3857"/><circle cx="231" cy="36" r="2" fill="#f6c86a"/><circle cx="231" cy="56" r="2" fill="#f6c86a"/></g>
+</svg></button>
+        <div class="cake-caption action-hint" id="slice-caption"><span aria-hidden="true">☝</span> Tap the cake or the button to cut</div>
+        <div class="cake-surprise hidden" id="cake-surprise" role="status">
+          <span class="surprise-heart" aria-hidden="true">♡</span>
+          <div><strong>Life is sweeter with you as my Misti.</strong><p>And I have a little letter to prove it…</p></div>
+        </div>
+        <div class="action-wrap">
+          <button id="btn-cut-action" class="btn btn-primary glow-effect" type="button">Cut My Birthday Cake 🍰</button>
+          <button id="btn-to-letter" class="btn btn-primary hidden" type="button">Read Your Letter 💌</button>
+          <button id="btn-recut" class="btn btn-ghost hidden" type="button">Cut it again ↺</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         SCENE 3 · A LETTER TO MY BEST FRIEND
+         Phase 1: Sealed envelope → Phase 2: Full letter
+    ═══════════════════════════════════════════════ -->
+    <section id="scene-letter" class="scene" inert aria-hidden="true" aria-labelledby="envelope-heading">
+
+      <!-- PHASE 1: Closed Sealed Envelope -->
+      <div class="envelope-phase" id="envelope-phase">
+        <div class="card-badge">From the Heart</div>
+        <h2 id="envelope-heading" class="title-serif">Some things are better<br /><span class="text-gradient">written from the heart.</span></h2>
+        <p class="subtitle">A little envelope. A lot of feelings.</p>
+        <div class="sealed-env-wrap">
+          <div class="sealed-env" id="sealed-env">
+            <!-- Back of envelope -->
+            <div class="senv-back"></div>
+            <!-- Envelope body / pocket -->
+            <div class="senv-pocket">
+              <div class="senv-left-tri"></div>
+              <div class="senv-right-tri"></div>
+              <div class="senv-bottom-tri"></div>
+            </div>
+            <div class="senv-flap" id="senv-flap" aria-hidden="true"></div>
+            <button class="senv-wax" id="wax-seal" type="button" aria-label="Open your letter"><span class="wax-heart" aria-hidden="true">♥</span></button>
+          </div>
+        </div>
+        <p class="env-tap-hint" id="env-tap-hint">✨ Tap the heart seal to open your letter</p>
+      </div>
+
+      <!-- PHASE 2: Full Letter Card (hidden initially) -->
+      <div class="letter-phase" id="letter-phase" aria-hidden="true" inert>
+        <div class="letter-card-wrap">
+          <div class="letter-parchment-card" id="letter-parchment-card">
+            <div class="parchment-inner">
+              <div class="letter-top-row">
+                <span class="letter-date-tag">For My Mist ♡</span>
+                <div class="letter-deco-line"></div>
+              </div>
+              <h2 id="letter-heading" class="letter-sal">My Dearest Misti,</h2>
+              <div class="letter-body-text">
+                <p>On this beautiful day, I want you to know how much your friendship means to me. In this vast, spinning world, I’m so grateful our paths crossed and you became my best friend.</p>
+                <p>Your laughter makes every ordinary day better. Thank you for the silly conversations, the honest advice, and for always being yourself. Even when miles separate us, I know my best friend is <em>under the same sky.</em></p>
+                <p>You deserve the entire universe, but for now, here’s a birthday surprise and a promise: your best friend will always be cheering you on.</p>
+              </div>
+              <div class="letter-signoff">
+                <p class="signoff-line">Always cheering you on, across every mile,</p>
+                <p class="signoff-author font-handwritten">Your Best Friend ♡</p>
+              </div>
+              <details class="secret-postscript" id="secret-postscript">
+                <summary>P.S. There’s one thing I didn’t tell you… <span aria-hidden="true">♡</span></summary>
+                <p>Some of my favourite memories are the ordinary ones with you. No grand plans. Just us laughing at something ridiculous and turning a normal day into another best-friend memory.</p>
+              </details>
+              <div class="letter-btn-wrap">
+                <button id="btn-to-gallery" type="button" class="btn btn-primary btn-sm" aria-disabled="true" aria-describedby="letter-gate-message">
+                  <span id="letter-lock" aria-hidden="true">🔒</span> Look Through Our Memories 📸
+                </button>
+                <p id="letter-gate-message" class="gate-message" role="status" aria-atomic="true">Open the P.S. above to unlock our memories.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         SCENE 4 · POLAROID GALLERY
+    ═══════════════════════════════════════════════ -->
+    <section id="scene-gallery" class="scene scene--balloons" inert aria-hidden="true" aria-labelledby="gallery-heading">
+      <div class="balloon-field" aria-hidden="true">
+        <span class="party-balloon"></span><span class="party-balloon"></span>
+        <span class="party-balloon"></span><span class="party-balloon"></span>
+        <span class="party-balloon"></span><span class="party-balloon"></span>
+        <span class="party-balloon"></span><span class="party-balloon"></span>
+      </div>
+      <div class="scene-card gallery-card-container">
+        <div class="card-badge">Cherished Moments</div>
+        <h2 id="gallery-heading" class="title-serif">
+          Our Favourite<br /><span class="text-gradient">Memories Together</span>
+        </h2>
+        <p class="subtitle">Little moments. Ridiculously good memories.<br />Tap a photo to find the thought tucked behind it.</p>
+
+        <div class="scrapbook-grid" id="scrapbook-grid">
+          <button type="button" class="polaroid-item item-1" aria-haspopup="dialog"
+                   data-src="assets/images/dummy1.jpg"
+                   data-caption="The first time I saw you"
+                   data-desc="Ei photo te tmake 1st dekhechilam Misti">
+            <span class="tape-pin" aria-hidden="true"></span>
+            <span class="polaroid-frame">
+              <span class="img-wrap">
+                <img src="assets/images/dummy1.jpg" alt="A special memory together" loading="lazy" decoding="async" width="400" height="440" />
+              </span>
+              <span class="polaroid-caption font-handwritten">The first time I saw you</span>
+            </span>
+          </button>
+
+          <button type="button" class="polaroid-item item-2" aria-haspopup="dialog"
+                   data-src="assets/images/dummy2.jpg"
+                   data-caption="My Saraswati Puja favourite"
+                   data-desc="Ei photo ta sobchec besi valo lagchilo Saraswati Puja te.">
+            <span class="tape-pin" aria-hidden="true"></span>
+            <span class="polaroid-frame">
+              <span class="img-wrap">
+                <img src="assets/images/dummy2.jpg" alt="A heartwarming memory" loading="lazy" decoding="async" width="400" height="440" />
+              </span>
+              <span class="polaroid-caption font-handwritten">My Saraswati Puja favourite</span>
+            </span>
+          </button>
+
+          <button type="button" class="polaroid-item item-3" aria-haspopup="dialog"
+                   data-src="assets/images/dummy3.jpg"
+                   data-caption="My first edit for you"
+                   data-desc="Ei photo ta 1st tmake edit kore diyechilam mone ache tmr">
+            <span class="tape-pin" aria-hidden="true"></span>
+            <span class="polaroid-frame">
+              <span class="img-wrap">
+                <img src="assets/images/dummy3.jpg" alt="Counting down the days" loading="lazy" decoding="async" width="400" height="440" />
+              </span>
+              <span class="polaroid-caption font-handwritten">My first edit for you</span>
+            </span>
+          </button>
+
+          <button type="button" class="polaroid-item item-4" aria-haspopup="dialog"
+                   data-src="assets/images/dummy4.jpg"
+                   data-caption="My first photo request"
+                   data-desc="Ei 1st ami demand korechila tmr kache. ">
+            <span class="tape-pin" aria-hidden="true"></span>
+            <span class="polaroid-frame">
+              <span class="img-wrap">
+                <img src="assets/images/dummy4.jpg" alt="A sweet conversation memory" loading="lazy" decoding="async" width="400" height="440" />
+              </span>
+              <span class="polaroid-caption font-handwritten">My first photo request</span>
+            </span>
+          </button>
+
+          <button type="button" class="polaroid-item item-5" aria-haspopup="dialog"
+                   data-src="assets/images/dummy5.jpg"
+                   data-caption="The photo that wowed me"
+                   data-desc="Ei photo ta jeta dekhe ami fida hoye gechilam.">
+            <span class="tape-pin" aria-hidden="true"></span>
+            <span class="polaroid-frame">
+              <span class="img-wrap">
+                <img src="assets/images/dummy5.jpg" alt="My best friend" loading="lazy" decoding="async" width="400" height="440" />
+              </span>
+              <span class="polaroid-caption font-handwritten">The photo that wowed me</span>
+            </span>
+          </button>
+
+          <button type="button" class="polaroid-item item-6" aria-haspopup="dialog"
+                   data-src="assets/images/dummy6.jpg"
+                   data-caption="Your first 10K views"
+                   data-desc="Ei Sei photo tmar 1st 10k view.">
+            <span class="tape-pin" aria-hidden="true"></span>
+            <span class="polaroid-frame">
+              <span class="img-wrap">
+                <img src="assets/images/dummy6.jpg" alt="A warm-toned collage of smiling portraits" loading="lazy" decoding="async" width="400" height="440" />
+              </span>
+              <span class="polaroid-caption font-handwritten">Your first 10K views</span>
+            </span>
+          </button>
+
+          <button type="button" class="polaroid-item item-7" aria-haspopup="dialog"
+                   data-src="assets/images/dummy7.jpg"
+                   data-caption="Do I look pretty?"
+                   data-desc="Ei sei cuttest one. jekahane dekhchile sundor lagche kina tmake.">
+            <span class="tape-pin" aria-hidden="true"></span>
+            <span class="polaroid-frame">
+              <span class="img-wrap">
+                <img src="assets/images/dummy7.jpg" alt="A smiling woman in golden sunlight" loading="lazy" decoding="async" width="400" height="440" />
+              </span>
+              <span class="polaroid-caption font-handwritten">Do I look pretty?</span>
+            </span>
+          </button>
+
+          <button type="button" class="polaroid-item item-8" aria-haspopup="dialog"
+                   data-src="assets/images/dummy8.jpg"
+                   data-caption="Your latest photoshoot"
+                   data-desc="Ei the recent one tmr photo shoot. Khub valo lagchilo Misti">
+            <span class="tape-pin" aria-hidden="true"></span>
+            <span class="polaroid-frame">
+              <span class="img-wrap">
+                <img src="assets/images/dummy8.jpg" alt="A woman in a red sari holding an open book" loading="lazy" decoding="async" width="400" height="440" />
+              </span>
+              <span class="polaroid-caption font-handwritten">Your latest photoshoot</span>
+            </span>
+          </button>
+
+          <button type="button" class="polaroid-item item-9" aria-haspopup="dialog"
+                   data-src="assets/images/dummy9.jpg"
+                   data-caption="Mischievous Misti"
+                   data-desc="Ei this one is the nought you misti.">
+            <span class="tape-pin" aria-hidden="true"></span>
+            <span class="polaroid-frame">
+              <span class="img-wrap">
+                <img src="assets/images/dummy9.jpg" alt="A playful close-up selfie" loading="lazy" decoding="async" width="400" height="440" />
+              </span>
+              <span class="polaroid-caption font-handwritten">Mischievous Misti</span>
+            </span>
+          </button>
+
+          <button type="button" class="polaroid-item item-10" aria-haspopup="dialog"
+                   data-src="assets/images/dummy10.jpg"
+                   data-caption="An ’80s heroine"
+                   data-desc="Eita holo the 80's heroin madam.">
+            <span class="tape-pin" aria-hidden="true"></span>
+            <span class="polaroid-frame">
+              <span class="img-wrap">
+                <img src="assets/images/dummy10.jpg" alt="A smiling woman wearing a denim jacket and red accessories" loading="lazy" decoding="async" width="400" height="440" />
+              </span>
+              <span class="polaroid-caption font-handwritten">An ’80s heroine</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="action-wrap" style="margin-top: 24px;">
+          <button id="btn-to-wishes" type="button" class="btn btn-primary glow-effect" aria-disabled="true" aria-describedby="photo-gate-message">
+            <span id="photo-lock" aria-hidden="true">🔒</span>
+            <span>I Saved Three Wishes for You ✦</span>
+          </button>
+        </div>
+        <p id="photo-gate-message" class="gate-message" role="status" aria-atomic="true">Open every photo to unlock your three wishes. 0 of 10 viewed.</p>
+      </div>
+    </section>
+
+    <!-- SCENE 5 · THREE LITTLE WISHES -->
+    <section id="scene-wishes" class="scene" inert aria-hidden="true" aria-labelledby="wishes-heading">
+      <div class="scene-card glass-card wishes-card">
+        <div class="card-badge">A Pocketful of Good Things</div>
+        <h2 id="wishes-heading" class="title-serif">If I could give you<br /><span class="text-gradient">three little things…</span></h2>
+        <p class="subtitle">I’d wrap them in starlight.<br />Tap each little star to open a wish.</p>
+        <div class="wish-cards">
+          <button type="button" class="wish-note" aria-expanded="false" aria-controls="wish-thought-0" data-wish="0">
+            <span class="wish-note-inner"><span class="wish-note-front" aria-hidden="true"><span class="wish-symbol">☀</span><span>A little light</span><small>tap to uncover</small></span>
+            <span class="wish-note-back" id="wish-thought-0" aria-hidden="true"><strong>Joy in the ordinary.</strong><span>Slow mornings. Your favourite song. A hundred tiny reasons to smile.</span></span></span>
+            <span class="sr-only wish-accessible">Open a wish for joy</span>
+          </button>
+          <button type="button" class="wish-note" aria-expanded="false" aria-controls="wish-thought-1" data-wish="1">
+            <span class="wish-note-inner"><span class="wish-note-front" aria-hidden="true"><span class="wish-symbol">☾</span><span>A little peace</span><small>tap to uncover</small></span>
+            <span class="wish-note-back" id="wish-thought-1" aria-hidden="true"><strong>Room to just be you.</strong><span>A softer world. A quiet mind. A best friend who accepts you as you are.</span></span></span>
+            <span class="sr-only wish-accessible">Open a wish for peace</span>
+          </button>
+          <button type="button" class="wish-note" aria-expanded="false" aria-controls="wish-thought-2" data-wish="2">
+            <span class="wish-note-inner"><span class="wish-note-front" aria-hidden="true"><span class="wish-symbol">✦</span><span>A little magic</span><small>tap to uncover</small></span>
+            <span class="wish-note-back" id="wish-thought-2" aria-hidden="true"><strong>The courage to dream.</strong><span>Beautiful firsts. Unexpected adventures. A year that feels like you.</span></span></span>
+            <span class="sr-only wish-accessible">Open a wish for magic</span>
+          </button>
+        </div>
+        <p class="wish-progress" id="wish-progress" role="status">Three tiny stars. Three wishes, all yours.</p>
+        <p class="wish-bonus hidden" id="wish-bonus">And a secret fourth wish? <strong>That I get to be there for all of it.</strong> ♡</p>
+        <div class="action-wrap"><button id="btn-to-finale" type="button" class="btn btn-primary" aria-disabled="true" aria-describedby="wish-gate-message"><span id="finale-lock" aria-hidden="true">🔒</span> One Last Surprise <span aria-hidden="true">→</span></button></div>
+        <p id="wish-gate-message" class="gate-message" role="status" aria-atomic="true">Open all three cards above to unlock your last surprise.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         SCENE 6 · THE GRAND FINALE (auto-celebration)
+    ═══════════════════════════════════════════════ -->
+    <section id="scene-finale" class="scene scene--balloons" inert aria-hidden="true" aria-labelledby="finale-heading">
+      <div class="balloon-field" aria-hidden="true">
+        <span class="party-balloon"></span><span class="party-balloon"></span>
+        <span class="party-balloon"></span><span class="party-balloon"></span>
+        <span class="party-balloon"></span><span class="party-balloon"></span>
+        <span class="party-balloon"></span><span class="party-balloon"></span>
+      </div>
+      <div class="scene-card glass-card finale-card">
+        <div class="card-badge">Best Friends · Always</div>
+
+        <div class="finale-portrait-wrap">
+          <div class="glowing-halo-ring"></div>
+          <div class="fairy-lights-heart">
+            <img src="assets/images/finale.jpg" alt="Heart of fairy lights on the beach" class="finale-main-img" />
+          </div>
+        </div>
+
+        <h2 id="finale-heading" class="title-serif finale-title">
+          Happy Birthday,<br />
+          <em class="text-gradient">My Misti.</em>
+        </h2>
+
+        <p class="finale-dedication">
+          "In a universe of billions of stars, I’m so glad I found a best friend like you. May this year bring you all the warmth, laughter, and magic you bring into my life every single day."
+        </p>
+
+        <button id="btn-hug" type="button" class="btn btn-primary glow-effect" aria-expanded="false" aria-controls="final-secret">Wait… One More Thing ♡</button>
+        <div id="final-secret" class="final-secret hidden" role="status">
+          <span class="hug-heart" aria-hidden="true">♡</span>
+          <p>Consider this the longest birthday hug.<br /><strong>You have a best friend beside you on your bright days, your quiet days, and all the days in between.</strong></p>
+          <span class="font-handwritten">Today is yours. Your best friend is cheering you on.</span>
+        </div>
+        <div class="finale-actions">
+          <button id="btn-replay" class="btn btn-ghost">
+            <span>↺</span>
+            <span>Replay Our Story</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Photo Lightbox Modal -->
+  <div id="photo-modal" class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="modal-caption" aria-describedby="modal-desc" aria-hidden="true" inert>
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+    <div class="modal-card">
+      <button id="modal-close" class="modal-close" aria-label="Close photo">&times;</button>
+      <div class="modal-img-wrap">
+        <img id="modal-img" alt="" />
+        <p id="modal-image-fallback" class="image-fallback hidden">The photo is taking a little rest.<br />The memory is still right here. ♡</p>
+      </div>
+      <div class="modal-info">
+        <p class="memory-eyebrow">A little thought, just for you</p>
+        <h3 id="modal-caption" class="modal-caption font-handwritten"></h3>
+        <p id="modal-desc" class="modal-desc"></p>
+      </div>
+      <div class="modal-navigation">
+        <button id="modal-prev" type="button" aria-label="Previous memory">←</button>
+        <span id="modal-counter" role="status">1 / 10</span>
+        <button id="modal-next" type="button" aria-label="Next memory">→</button>
+      </div>
+      <div id="modal-wishes-action" class="modal-wishes-action hidden">
+        <button id="btn-modal-to-wishes" type="button" class="btn btn-primary" disabled>I Saved Three Wishes for You ✦</button>
+      </div>
+    </div>
+  </div>
+
+  <p id="audio-status" class="sr-only" role="status"></p>
+  <noscript><p class="noscript-message">Happy birthday, my best friend. You make the ordinary feel extraordinary. ♡<br />Enable JavaScript to open your interactive surprises.</p></noscript>
+
+  <!-- Audio -->
+  <audio id="bg-music" src="assets/audio/happy-birthday.mp3" preload="none"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
