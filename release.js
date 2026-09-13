@@ -1,7 +1,7 @@
 /** Open the birthday journey at the scheduled India time, regardless of the visitor's timezone. */
 (() => {
   'use strict';
-  const opensAt = Date.parse('2026-09-22T00:00:00+05:30');
+  const opensAt = Date.parse('2026-09-13T20:52:00+05:30');
   const countdown = document.getElementById('release-countdown');
   const status = document.getElementById('countdown-status');
   const retry = document.getElementById('btn-open-surprise');
@@ -23,6 +23,7 @@
   let priming = false;
   let soundPrimed = false;
   let celebrationActive = false;
+  let visualsFinished = false;
   let soundStarted = false;
   let soundComplete = false;
   let playbackPending = false;
@@ -31,7 +32,7 @@
   function finishSound() {
     soundComplete = true;
     fireworksSound.pause();
-    document.removeEventListener('pointerdown', unlockSound);
+    document.removeEventListener('click', unlockSound, true);
     document.removeEventListener('keydown', unlockSound);
     if (celebrationAudio && celebrationAudio.state !== 'closed') celebrationAudio.close().catch(() => {});
   }
@@ -51,8 +52,10 @@
     fireworksSound.play().then(() => {
       soundStarted = true;
       playbackPending = false;
+      // If autoplay was blocked, pair the first permitted playback with fresh fireworks.
+      if (visualsFinished) celebrateOpening();
     }).catch(() => {
-      // A first tap or key press can retry while the fireworks are visible.
+      // Keep the first-tap fallback available even after the initial visuals finish.
       playbackPending = false;
     });
   }
@@ -79,7 +82,7 @@
         soundPrimed = true;
       }).catch(() => {
         fireworksSound.pause();
-        ti.currentTime = 0;
+        fireworksSound.currentTime = 0;
       }).finally(() => {
         priming = false;
         if (celebrationActive) startCrackerPlayback();
@@ -90,10 +93,11 @@
   }
 
   function unlockSound(event) {
-    if (event.repeat || (event.type === 'pointerdown' && event.button !== 0)) return;
+    if (event.repeat) return;
     prepareSound();
   }
-  document.addEventListener('pointerdown', unlockSound);
+  // A completed click/tap counts as activation on touch devices too.
+  document.addEventListener('click', unlockSound, true);
   document.addEventListener('keydown', unlockSound);
 
   fireworksSound.addEventListener('ended', () => {
@@ -109,6 +113,7 @@
   }
 
   function celebrateOpening() {
+    visualsFinished = false;
     const canvas = document.getElementById('release-fireworks');
     const context = canvas.getContext('2d');
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -132,9 +137,11 @@
       canvas.hidden = true;
       if (context) context.clearRect(0, 0, innerWidth, innerHeight);
       window.removeEventListener('resize', resize);
-      document.removeEventListener('pointerdown', unlockSound);
-      document.removeEventListener('keydown', unlockSound);
-      if (!soundStarted) finishSound();
+      visualsFinished = true;
+      if (soundStarted || soundComplete) {
+        document.removeEventListener('click', unlockSound, true);
+        document.removeEventListener('keydown', unlockSound);
+      }
     }
     function draw(now) {
       const still = reducedMotion.matches;
