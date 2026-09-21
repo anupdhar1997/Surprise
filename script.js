@@ -135,6 +135,7 @@
   const musicPlaylist = [
     'assets/audio/happy-birthday.mp3',
     'assets/audio/happy-birthday.mp3',
+    'assets/audio/happy-birthday.mp3',
     'assets/audio/Funny2.mp3',
     'assets/audio/Funny1.mp3'
   ];
